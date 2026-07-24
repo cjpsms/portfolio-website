@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>พอร์ตโฟลิโอ — วิศวกรรมคอมพิวเตอร์และเทคโนโลยีดิจิทัล (CEDT)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d2b1f;
+    --bg-panel:#123a2a;
+    --bg-panel-2:#16452f;
+    --bg-panel-3:#0a2118;
+    --ink:#eef2ea;
+    --ink-dim:#a9c2b3;
+    --ink-faint:#6f9081;
+    --copper:#d1975c;
+    --copper-bright:#e8b374;
+    --teal:#4fd1c5;
+    --teal-dim:#2c8a80;
+    --red-led:#ff6b6b;
+    --trace: rgba(209,151,92,0.16);
+    --line: rgba(238,242,234,0.10);
+    --mono:'IBM Plex Mono', monospace;
+    --display:'Space Grotesk','Noto Sans Thai', sans-serif;
+    --thai:'Noto Sans Thai', 'Space Grotesk', sans-serif;
+    --radius: 10px;
+    --maxw: 1080px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--thai);
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  ::selection{background:var(--teal);color:#04120d;}
+
+  :focus-visible{
+    outline:2px solid var(--teal);
+    outline-offset:3px;
+  }
+
+  .mono{font-family:var(--mono);}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+
+  /* ---------- background circuit texture ---------- */
+  .circuit-bg{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 42px 42px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 40%, transparent 85%);
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 40%, transparent 85%);
+    pointer-events:none;
+  }
+
+  /* ---------- header / nav ---------- */
+  .site-header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(13,43,31,0.88);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px; max-width:var(--maxw); margin:0 auto;
+  }
+  .nav__brand{
+    font-family:var(--mono); font-size:13px; letter-spacing:.08em;
+    color:var(--copper-bright); text-decoration:none;
+  }
+  .nav__brand b{color:var(--ink);}
+  .nav__links{
+    display:flex; gap:28px; list-style:none; margin:0; padding:0;
+  }
+  .nav__links a{
+    text-decoration:none; font-size:14.5px; color:var(--ink-dim);
+    transition:color .15s ease;
+  }
+  .nav__links a:hover{color:var(--teal);}
+  .nav__toggle{
+    display:none; background:none; border:1px solid var(--line); color:var(--ink);
+    border-radius:6px; padding:8px 10px; font-size:18px; cursor:pointer;
+  }
+
+  @media (max-width:760px){
+    .nav__links{
+      position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0;
+      background:var(--bg-panel);
+      border-bottom:1px solid var(--line);
+      max-height:0; overflow:hidden;
+      transition:max-height .25s ease;
+    }
+    .nav__links.is-open{max-height:320px;}
+    .nav__links a{padding:14px 24px; display:block; border-top:1px solid var(--line);}
+    .nav__toggle{display:block;}
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; overflow:hidden;
+    padding:96px 0 72px;
+  }
+  .status-chip{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.06em;
+    color:var(--ink-dim);
+    border:1px solid var(--line); border-radius:999px;
+    padding:6px 14px; margin-bottom:28px;
+  }
+  .status-dot{
+    width:8px; height:8px; border-radius:50%; background:var(--teal);
+    box-shadow:0 0 8px 2px rgba(79,209,197,.65);
+    animation:blink 2.4s ease-in-out infinite;
+  }
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:.35;} }
+
+  .hero h1{
+    font-family:var(--display); font-weight:700;
+    font-size:clamp(2rem, 5vw, 3.4rem);
+    line-height:1.18; margin:0 0 18px; max-width:80ch;
+  }
+  .hero h1 .accent{color:var(--copper-bright);}
+  .hero h1 .no-wrap{white-space:nowrap;}
+  .hero p.lead{
+    font-size:clamp(1rem, 2vw, 1.15rem); color:var(--ink-dim);
+    max-width:56ch; margin:0 0 34px;
+  }
+  .cta-row{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:13px 22px; border-radius:8px; font-size:14.5px; font-weight:500;
+    text-decoration:none; cursor:pointer; border:1px solid transparent;
+    transition:transform .12s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn--primary{background:var(--teal); color:#04120d;}
+  .btn--primary:hover{background:#6cded3;}
+  .btn--ghost{border-color:var(--line); color:var(--ink);}
+  .btn--ghost:hover{border-color:var(--copper);}
+
+  /* ---------- section shell ---------- */
+  .section{padding:76px 0; border-top:1px solid var(--line);}
+  .eyebrow{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.14em;
+    color:var(--copper-bright); text-transform:uppercase; margin:0 0 10px;
+  }
+  .section h2{
+    font-family:var(--display); font-weight:700;
+    font-size:clamp(1.5rem,3vw,2.1rem); margin:0 0 16px;
+  }
+  .section .intro{color:var(--ink-dim); max-width:62ch; margin:0 0 40px;}
+
+  /* ---------- about ---------- */
+  .about-grid{
+    display:grid; grid-template-columns:1.3fr 1fr; gap:36px; align-items:start;
+  }
+  @media (max-width:760px){ .about-grid{grid-template-columns:1fr;} }
+  .about-grid p{color:var(--ink-dim);}
+  .about-grid p strong{color:var(--ink); font-weight:600;}
+
+  .fact-box{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:26px;
+  }
+  .fact-box__title{font-family:var(--mono); font-size:12px; letter-spacing:.1em; color:var(--ink-faint); margin:0 0 18px;}
+  .fact-list{list-style:none; margin:0; padding:0; display:grid; gap:16px;}
+  .fact-list li{display:flex; justify-content:space-between; gap:12px; border-top:1px dashed var(--line); padding-top:14px;}
+  .fact-list li:first-child{border-top:none; padding-top:0;}
+  .fact-num{font-family:var(--mono); color:var(--teal); font-weight:600; font-size:15px; white-space:nowrap;}
+  .fact-label{color:var(--ink-dim); font-size:14.5px;}
+
+  /* ---------- skills / BOM ---------- */
+  .bom{width:100%; border-collapse:collapse; font-size:14.5px;}
+  .bom thead th{
+    text-align:left; font-family:var(--mono); font-weight:500; font-size:12px;
+    letter-spacing:.08em; color:var(--ink-faint); text-transform:uppercase;
+    padding:0 0 12px; border-bottom:1px solid var(--line);
+  }
+  .bom td{padding:16px 0; border-bottom:1px solid var(--line); vertical-align:middle;}
+  .bom tr:last-child td{border-bottom:none;}
+  .bom .ref{font-family:var(--mono); color:var(--copper-bright); font-size:13.5px;}
+  .bom .name{color:var(--ink); font-weight:500;}
+  .bom .desc{color:var(--ink-dim); font-size:13.5px;}
+  .meter{display:flex; gap:4px;}
+  .meter span{
+    width:16px; height:8px; border-radius:2px; background:rgba(238,242,234,0.08);
+  }
+  .meter span.on{background:var(--teal);}
+
+  @media (max-width:640px){
+    .bom .desc, .bom thead th:nth-child(3){display:none;}
+  }
+
+  /* ---------- featured interactive panel ---------- */
+  .panel{
+    background:
+      radial-gradient(circle at top left, rgba(79,209,197,.15), transparent 34%),
+      var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:28px;
+    box-shadow:0 24px 60px rgba(2,10,7,.22);
+  }
+
+  /* Code runner */
+  .code-runner{display:grid; grid-template-columns:1.05fr .95fr; gap:20px; align-items:stretch;}
+  .runner-card{
+    background:linear-gradient(145deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px;
+    display:flex; flex-direction:column; gap:14px;
+    min-height:100%;
+  }
+  .runner-card__header{display:flex; justify-content:space-between; align-items:center; gap:12px;}
+  .runner-card__eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em; color:var(--ink-faint); text-transform:uppercase; margin-bottom:4px;}
+  .runner-card__title{font-size:1rem; font-weight:600; color:var(--ink);}
+  .runner-badge{padding:6px 10px; border-radius:999px; font-family:var(--mono); font-size:11px; color:var(--teal); background:rgba(79,209,197,.12); border:1px solid rgba(79,209,197,.25);}
+  .runner-badge--muted{color:var(--copper-bright); background:rgba(209,151,92,.12); border-color:rgba(209,151,92,.25);}
+  .code-runner .editor{
+    width:100%; min-height:240px; background:#071612; color:var(--ink);
+    border:1px solid rgba(79,209,197,.22); padding:14px; border-radius:10px;
+    font-family:var(--mono); font-size:14px; resize:vertical;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+  }
+  .code-runner .controls{display:flex; flex-wrap:wrap; gap:10px; margin-top:2px;}
+  .code-runner .output{
+    background:#04120d; color:var(--ink); border:1px solid rgba(79,209,197,.22);
+    padding:14px; border-radius:10px; min-height:240px; overflow:auto; white-space:pre-wrap;
+    font-family:var(--mono); font-size:13.5px; line-height:1.7;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+  }
+  .mono-hint{font-size:13px; color:var(--ink-dim);}
+  .run-btn{padding:10px 14px;}
+  @media (max-width:760px){ .code-runner{grid-template-columns:1fr;} .panel{padding:20px;} }
+
+  .panel__controls{display:flex; flex-direction:column; gap:26px;}
+  .control-block{
+    background:var(--bg-panel-3); border:1px solid var(--line); border-radius:10px; padding:18px 20px;
+  }
+  .control-block__label{
+    font-family:var(--mono); font-size:12px; letter-spacing:.08em; color:var(--ink-faint);
+    text-transform:uppercase; margin-bottom:12px; display:flex; justify-content:space-between;
+  }
+
+  .led-row{display:flex; align-items:center; gap:16px;}
+  .led{
+    width:20px; height:20px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #5a2a2a, #2a1414);
+    box-shadow: inset 0 0 4px rgba(0,0,0,.6);
+    transition:box-shadow .2s ease, background .2s ease;
+  }
+  .led.is-on{
+    background:radial-gradient(circle at 35% 30%, #9df3ea, var(--teal));
+    box-shadow:0 0 16px 4px rgba(79,209,197,.75), inset 0 0 6px rgba(255,255,255,.5);
+  }
+  .switch{
+    position:relative; width:52px; height:28px; border-radius:999px;
+    background:var(--bg-panel-2); border:1px solid var(--line);
+    cursor:pointer; flex-shrink:0;
+  }
+  .switch__knob{
+    position:absolute; top:2px; left:2px; width:22px; height:22px; border-radius:50%;
+    background:var(--ink-dim); transition:transform .18s ease, background .18s ease;
+  }
+  .switch.is-on{background:var(--teal-dim); border-color:var(--teal);}
+  .switch.is-on .switch__knob{transform:translateX(24px); background:var(--ink);}
+
+  input[type="range"]{
+    width:100%; accent-color:var(--teal); cursor:pointer;
+  }
+  .slider-readout{
+    font-family:var(--mono); font-size:22px; color:var(--ink); margin-top:10px;
+  }
+  .slider-readout .unit{color:var(--ink-faint); font-size:14px;}
+
+  .cloud-btn{
+    width:100%; justify-content:center; margin-top:4px;
+  }
+
+  .panel__display{display:flex; flex-direction:column; gap:16px;}
+  .chart-frame{
+    background:var(--bg-panel-3); border:1px solid var(--line); border-radius:10px; padding:14px;
+  }
+  .chart-frame__label{font-family:var(--mono); font-size:12px; color:var(--ink-faint); margin-bottom:8px; letter-spacing:.08em;}
+  canvas#chart{width:100%; height:140px; display:block;}
+
+  .console{
+    background:#081a12; border:1px solid var(--line); border-radius:10px;
+    padding:14px 16px; font-family:var(--mono); font-size:12.5px; color:var(--teal);
+    height:150px; overflow-y:auto; flex-grow:1;
+  }
+  .console div{margin-bottom:4px; color:var(--ink-dim);}
+  .console div .tag{color:var(--copper-bright);}
+  .console div:last-child{color:var(--teal);}
+
+  .caption{font-size:13.5px; color:var(--ink-faint); margin-top:18px;}
+
+  /* ---------- projects ---------- */
+  .projects-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  @media (max-width:900px){ .projects-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:640px){ .projects-grid{grid-template-columns:1fr;} }
+
+  .project-card{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:12px;
+    padding:24px; display:flex; flex-direction:column; gap:12px;
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .project-card:hover{border-color:var(--copper); transform:translateY(-3px);}
+  .project-card__module{font-family:var(--mono); font-size:11.5px; color:var(--ink-faint); letter-spacing:.1em;}
+  .project-card h3{margin:0; font-size:1.05rem; font-family:var(--display); font-weight:700;}
+  .project-card p{margin:0; color:var(--ink-dim); font-size:14px; flex-grow:1;}
+  .tags{display:flex; flex-wrap:wrap; gap:8px;}
+  .tag{
+    font-family:var(--mono); font-size:11.5px; padding:4px 10px; border-radius:999px;
+    background:rgba(79,209,197,0.1); color:var(--teal); border:1px solid rgba(79,209,197,.25);
+  }
+  .project-card a{
+    font-size:13.5px; color:var(--copper-bright); text-decoration:none; margin-top:4px;
+  }
+  .project-card a:hover{text-decoration:underline;}
+
+  /* ---------- timeline ---------- */
+  .timeline{border-left:1px solid var(--line); margin-left:8px; display:flex; flex-direction:column;}
+  .timeline__item{
+    position:relative; padding:4px 0 32px 32px; cursor:pointer;
+  }
+  .timeline__item:last-child{padding-bottom:4px;}
+  .timeline__marker{
+    position:absolute; left:-9px; top:2px;
+    width:17px; height:17px; border-radius:50%;
+    background:var(--bg-panel); border:1px solid var(--copper);
+    color:var(--copper-bright); font-family:var(--mono); font-size:10px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .timeline__head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .timeline__head h3{margin:0; font-family:var(--display); font-size:1.05rem; font-weight:700;}
+  .timeline__chevron{
+    font-family:var(--mono); color:var(--ink-faint); transition:transform .2s ease; flex-shrink:0;
+  }
+  .timeline__item.is-open .timeline__chevron{transform:rotate(90deg); color:var(--teal);}
+  .timeline__body{
+    max-height:0; overflow:hidden; transition:max-height .25s ease;
+    color:var(--ink-dim); font-size:14.5px;
+  }
+  .timeline__item.is-open .timeline__body{max-height:200px; margin-top:10px;}
+
+  /* ---------- footer ---------- */
+  .footer{padding:48px 0 40px; border-top:1px solid var(--line);}
+  .footer-grid{
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:20px; align-items:center;
+  }
+  .footer-links{display:flex; gap:20px; list-style:none; margin:0; padding:0;}
+  .footer-links a{text-decoration:none; color:var(--ink-dim); font-size:14px;}
+  .footer-links a:hover{color:var(--teal);}
+  .footer small{color:var(--ink-faint); font-family:var(--mono); font-size:12px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+    html{scroll-behavior:auto;}
+  }
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease;}
+  .reveal.is-visible{opacity:1; transform:none;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a href="#top" class="nav__brand"><b>PORTFOLIO</b> // CEDT&ndash;01</a>
+    <button class="nav__toggle" id="navToggle" aria-label="เปิดเมนู" aria-expanded="false">&#9776;</button>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="#about">เกี่ยวกับ</a></li>
+      <li><a href="#skills">ทักษะ</a></li>
+      <li><a href="#featured">ผลงานเด่น</a></li>
+      <li><a href="#projects">โปรเจกต์</a></li>
+      <li><a href="#roadmap">เส้นทาง CEDT</a></li>
+      <li><a href="#contact">ติดต่อ</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="hero" id="top">
+  <div class="circuit-bg"></div>
+  <div class="wrap">
+    <div class="status-chip"><span class="status-dot"></span> STATUS: กำลังพัฒนาและทดลองระบบต่าง ๆ</div>
+    <h1>PORTFOLIO ของผม: <span class="no-wrap">พงษ์นฤดล พูนจิรธนเรือง</span></h1>
+    <p class="lead">ผมสนใจในการตั้งค่าและทดลองระบบต่าง ๆ เพื่อให้ได้ประสบการณ์จริงจากการสร้างเซิร์ฟเวอร์ การใช้งาน AI บนเว็บ และการจัดการเกมเซิร์ฟเวอร์</p>
+    <div class="cta-row">
+      <a href="#featured" class="btn btn--primary">ลองแผงควบคุมจำลอง</a>
+      <a href="#projects" class="btn btn--ghost">ดูโปรเจกต์ทั้งหมด</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <p class="eyebrow">01 — เกี่ยวกับผม</p>
+    <h2>ทำไมถึงเลือก CEDT</h2>
+    <div class="about-grid">
+      <div>
+        <p>ผมเริ่มสนใจด้านนี้จากการต่อวงจร LED ตัวแรกแล้วมันไม่ติด ต้องนั่งไล่หาว่าขาไหนผิด จากตรงนั้นก็ค่อย ๆ ขยับมาเขียนโค้ดควบคุมเซนเซอร์ จนรู้ว่าสิ่งที่ชอบจริง ๆ คือจุดที่ฮาร์ดแวร์กับซอฟต์แวร์มาเจอกัน</p>
+        <p><strong>วิศวกรรมคอมพิวเตอร์และเทคโนโลยีดิจิทัล (CEDT)</strong> เป็นหลักสูตรของคณะวิศวกรรมศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ที่ออกแบบมาให้เรียนแบบลงมือทำจริงตั้งแต่ปีแรก มีการฝึกงานทุกปีและทำงานร่วมกับบริษัทเทคโนโลยีชั้นนำตลอดหลักสูตร ซึ่งตรงกับสิ่งที่ผมอยากได้ คือได้ทดลองของจริง ไม่ใช่แค่ทฤษฎีในห้องเรียน</p>
+        <p>เป้าหมายของผมคือการเป็นวิศวกรที่ทำงานได้ตั้งแต่ระดับวงจรไปจนถึงระบบซอฟต์แวร์ที่คุยกับอุปกรณ์เหล่านั้น โดยเฉพาะสาย IoT และระบบฝังตัวที่เชื่อมโลกจริงกับข้อมูลดิจิทัลเข้าด้วยกัน</p>
+      </div>
+      <div class="fact-box">
+        <p class="fact-box__title">CEDT ในตัวเลข</p>
+        <ul class="fact-list">
+          <li><span class="fact-label">รับนิสิตต่อปี</span><span class="fact-num">300 คน</span></li>
+          <li><span class="fact-label">เทอมแรก</span><span class="fact-num">ไม่ตัดเกรด</span></li>
+          <li><span class="fact-label">ฝึกงานภาคอุตสาหกรรม</span><span class="fact-num">ทุกปี</span></li>
+          <li><span class="fact-label">กิจกรรมร่วมบริษัท</span><span class="fact-num">Friday Activities</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="skills">
+  <div class="wrap">
+    <p class="eyebrow">02 — SKILLS.BOM</p>
+    <h2>ทักษะที่ติดตั้งแล้ว</h2>
+    <p class="intro">เรียงเหมือนรายการอุปกรณ์บนแผงวงจร แต่ละแถวคือทักษะหนึ่งตัวที่ใช้ประกอบเป็นตัวผมตอนนี้</p>
+    <table class="bom">
+      <thead>
+        <tr><th style="width:70px">REF</th><th>ทักษะ</th><th>รายละเอียด</th><th style="width:120px">ระดับ</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ref">U1</td><td class="name">Python</td>
+          <td class="desc">ใช้เขียนสคริปต์ประมวลผลข้อมูลจากเซนเซอร์และงานอัตโนมัติทั่วไป</td>
+          <td><div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div></td>
+        </tr>
+        <tr>
+          <td class="ref">U2</td><td class="name">C / C++</td>
+          <td class="desc">เขียนเฟิร์มแวร์ควบคุมไมโครคอนโทรลเลอร์ และ โปรแกรมต่างๆ</td>
+          <td><div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div></td>
+        </tr>
+        <tr>
+          <td class="ref">Q1</td><td class="name">ESP32 / Arduino</td>
+          <td class="desc">ต่อวงจร อ่านค่าเซนเซอร์ สั่งงานอุปกรณ์ IoT</td>
+          <td><div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div></td>
+        </tr>
+        <tr>
+          <td class="ref">R1</td><td class="name">Git &amp; GitHub</td>
+          <td class="desc">จัดการเวอร์ชันโค้ดและทำงานร่วมกับผู้อื่น</td>
+          <td><div class="meter"><span class="on"></span><span class="on"></span><span></span><span></span><span></span></div></td>
+        </tr>
+        <tr>
+          <td class="ref">C1</td><td class="name">วงจรไฟฟ้าต่างๆ</td>
+          <td class="desc">อ่านผังวงจร ต่อเบรดบอร์ด แก้ปัญหาวงจรไฟฟ้าต่างๆ</td>
+          <td><div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div></td>
+        </tr>
+        <tr>
+          <td class="ref">D1</td><td class="name">การวิเคราะห์ข้อมูล</td>
+          <td class="desc">แปลงข้อมูลดิบจากเซนเซอร์ให้อ่านง่ายด้วยกราฟ</td>
+          <td><div class="meter"><span class="on"></span><span class="on"></span><span></span><span></span><span></span></div></td>
+        </tr>
+        <tr>
+          <td class="ref">U3</td><td class="name">Linux &amp; Server</td>
+          <td class="desc">ตั้งค่าและดูแลเซิร์ฟเวอร์บน Linux ใช้รัน service รับข้อมูลจากอุปกรณ์ IoT</td>
+          <td><div class="meter"><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section" id="featured">
+  <div class="wrap">
+    <p class="eyebrow">03 — ผลงานเด่น</p>
+    <h2>แผงควบคุม IoT จำลอง</h2>
+    <p class="intro">ลองเล่นได้จริง สลับสวิตช์เพื่อคุม LED ปรับสไลเดอร์เพื่อจำลองค่าจากเซนเซอร์อุณหภูมิ แล้วกดส่งข้อมูลขึ้นคลาวด์ เหมือนระบบ IoT ที่ผมต่อกับ ESP32 จริง ๆ</p>
+
+    <div class="panel">
+      <div class="code-runner">
+        <div class="runner-card">
+          <div class="runner-card__header">
+            <div>
+              <div class="runner-card__eyebrow">Editor / Python</div>
+              <div class="runner-card__title">รันโค้ดแบบเรียลไทม์</div>
+            </div>
+            <span class="runner-badge">Live</span>
+          </div>
+          <textarea id="pyEditor" class="editor" spellcheck="false">print("Hello from Pyodide!\n")
+for i in range(3):
+    print('line', i+1)
+</textarea>
+          <div class="controls">
+            <button id="runPy" class="btn btn--primary run-btn">Run (Python)</button>
+            <button id="clearOut" class="btn btn--ghost" style="font-style: var(--ink-faint);">Clear Output</button>
+            <button id="loadExample" class="btn btn--ghost" style="font-style: var(--ink-faint);">โหลดตัวอย่าง</button>
+          </div>
+          <div class="mono-hint">ลองปรับโค้ดเล็กน้อยแล้วกด Run เพื่อดูผลลัพธ์ในคอนโซลด้านขวา</div>
+        </div>
+
+        <div class="runner-card">
+          <div class="runner-card__header">
+            <div>
+              <div class="runner-card__eyebrow">Output / Console</div>
+              <div class="runner-card__title">ผลลัพธ์การรัน</div>
+            </div>
+            <span class="runner-badge runner-badge--muted">Pyodide</span>
+          </div>
+          <pre id="pyOutput" class="output" aria-live="polite"></pre>
+        </div>
+      </div>
+    </div>
+    <p class="caption">หมายเหตุ: ทุกค่าที่เห็นเป็นข้อมูลจำลองบนหน้าเว็บนี้ล้วน ๆ ไม่ได้เชื่อมกับอุปกรณ์จริง แต่ตรรกะการทำงานเลียนแบบระบบ IoT จริงที่อ่านค่าเซนเซอร์แล้วส่งขึ้นเซิร์ฟเวอร์</p>
+  </div>
+</section>
+
+<section class="section" id="projects">
+  <div class="wrap">
+    <p class="eyebrow">04 — โปรเจกต์</p>
+    <h2>ผลงานที่ผ่านมา</h2>
+    <div class="projects-grid">
+      <div class="project-card">
+        <span class="project-card__module">MODULE 01</span>
+        <h3>Server Linux</h3>
+        <p>ตั้งค่าและดูแลระบบ Linux สำหรับรันเซิร์ฟเวอร์ต่าง ๆ พร้อมใช้บริการและจัดการงานบนเครื่องแม่ข่าย</p>
+        <div class="tags"><span class="tag">Linux</span><span class="tag">Server</span><span class="tag">Administration</span></div>
+        <a href="#">ดูรายละเอียด &rarr;</a>
+      </div>
+      <div class="project-card">
+        <span class="project-card__module">MODULE 02</span>
+        <h3>Ollama Open WebUI</h3>
+        <p>ติดตั้ง Ollama ร่วมกับ Open WebUI เพื่อให้สามารถใช้งานโมเดล AI แบบ local ผ่านเว็บได้สะดวกและง่ายต่อการทดลอง</p>
+        <div class="tags"><span class="tag">Ollama</span><span class="tag">Web UI</span><span class="tag">AI</span></div>
+        <a href="#">ดูรายละเอียด &rarr;</a>
+      </div>
+      <div class="project-card">
+        <span class="project-card__module">MODULE 03</span>
+        <h3>Minecraft Server</h3>
+        <p>สร้างและดูแล Minecraft Server สำหรับเล่นกับเพื่อน พร้อมตั้งค่าพื้นฐานและกำหนดสภาพแวดล้อมให้รองรับการใช้งานจริง</p>
+        <div class="tags"><span class="tag">Minecraft</span><span class="tag">Gaming</span><span class="tag">Server</span></div>
+        <a href="#">ดูรายละเอียด &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+<script>
+  let pyodide = null;
+  const pyEditor = document.getElementById('pyEditor');
+  const pyOutput = document.getElementById('pyOutput');
+  const loadExampleBtn = document.getElementById('loadExample');
+
+  const sampleCode = `print("Hello from Pyodide!\\n")
+for i in range(3):
+    print('line', i + 1)`;
+
+  function indent(code){
+    return code.split('\n').map(l=>'    '+l).join('\n');
+  }
+
+  async function loadPyodideAndReady(){
+    try{
+      pyodide = await loadPyodide({indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.23.4/full/'});
+      pyOutput.textContent = 'Pyodide พร้อมใช้งานแล้ว';
+    }catch(e){
+      pyOutput.textContent = 'โหลดตัวรัน Python ไม่สำเร็จ: ' + e;
+    }
+  }
+
+  if(loadExampleBtn){
+    loadExampleBtn.addEventListener('click', () => {
+      if(pyEditor){ pyEditor.value = sampleCode; }
+      if(pyOutput){ pyOutput.textContent = 'ตัวอย่างโค้ดถูกโหลดแล้ว'; }
+    });
+  }
+
+  loadPyodideAndReady();
+
+  document.addEventListener('click', async (e)=>{
+    if(e.target && e.target.id === 'runPy'){
+      pyOutput.textContent = 'กำลังรัน...';
+      if(!pyodide){ pyOutput.textContent = 'Pyodide ยังไม่พร้อม'; return; }
+      const code = pyEditor ? pyEditor.value : '';
+      const wrapped = `import sys, io, traceback\nbuf = io.StringIO()\nsys.stdout = buf\nsys.stderr = buf\ntry:\n${indent(code)}\nexcept Exception:\n    traceback.print_exc()\nbuf.getvalue()`;
+      try{
+        const result = await pyodide.runPythonAsync(wrapped);
+        pyOutput.textContent = result ?? '';
+      }catch(err){ pyOutput.textContent = String(err); }
+    }
+    if(e.target && e.target.id === 'clearOut'){
+      pyOutput.textContent = '';
+    }
+  });
+</script>
+
+<section class="section" id="roadmap">
+  <div class="wrap">
+    <p class="eyebrow">05 — เส้นทาง CEDT</p>
+    <h2>แผนที่วางใว้ใน CEDT</h2>
+    <p class="intro">คลิกแต่ละปีเพื่อดูว่าผมอยากโฟกัสอะไรบ้างในช่วงนั้น</p>
+    <div class="timeline">
+      <div class="timeline__item is-open">
+        <div class="timeline__marker">1</div>
+        <div class="timeline__head">
+          <h3>ปีที่ 1 — ปูพื้นฐาน</h3>
+          <span class="timeline__chevron">&rsaquo;</span>
+        </div>
+        <div class="timeline__body">วางรากฐานคณิตศาสตร์ การเขียนโปรแกรมเบื้องต้น และเข้าร่วมกิจกรรม Friday Activities เพื่อเห็นภาพงานจริงจากบริษัทพันธมิตรตั้งแต่เทอมแรก</div>
+      </div>
+      <div class="timeline__item">
+        <div class="timeline__marker">2</div>
+        <div class="timeline__head">
+          <h3>ปีที่ 2 — แยกสาย ฮาร์ดแวร์ / ซอฟต์แวร์</h3>
+          <span class="timeline__chevron">&rsaquo;</span>
+        </div>
+        <div class="timeline__body">ลงลึกเรื่องระบบฝังตัวและโครงสร้างข้อมูล พร้อมเริ่มโปรเจกต์กลุ่มที่ต้องใช้ทั้งสองด้านร่วมกัน</div>
+      </div>
+      <div class="timeline__item">
+        <div class="timeline__marker">3</div>
+        <div class="timeline__head">
+          <h3>ปีที่ 3 — ฝึกงานภาคอุตสาหกรรม</h3>
+          <span class="timeline__chevron">&rsaquo;</span>
+        </div>
+        <div class="timeline__body">ออกไปฝึกงานกับบริษัทเทคโนโลยีจริง นำปัญหาจากหน้างานกลับมาต่อยอดเป็นหัวข้อโปรเจกต์</div>
+      </div>
+      <div class="timeline__item">
+        <div class="timeline__marker">4</div>
+        <div class="timeline__head">
+          <h3>ปีที่ 4 — โปรเจกต์จบ</h3>
+          <span class="timeline__chevron">&rsaquo;</span>
+        </div>
+        <div class="timeline__body">ทำโปรเจกต์จบร่วมกับภาคอุตสาหกรรม ตั้งใจเลือกหัวข้อสาย IoT ที่ต่อยอดจากผลงานที่สะสมมาตลอดหลักสูตร</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="wrap">
+    <p class="eyebrow">06 — ติดต่อ</p>
+    <h2>ที่อยู่ติดต่อ</h2>
+    <p class="intro">ติดต่อและแลกเปลี่ยนข้อมูล</p>
+    <div class="cta-row">
+      <a href="mailto:cj.psms@gmail.com" class="btn btn--primary">cj.psms@gmail.com</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap footer-grid">
+    <small>&copy;cj — PORTFOLIO // CEDT&ndash;01 — สร้างด้วย HTML, CSS, JS</small>
+    <ul class="footer-links">
+      <li><a>©cj 2026</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('is-open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navLinks.classList.remove('is-open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  }));
+
+  // Scroll reveal
+  document.querySelectorAll('.section').forEach(s => s.classList.add('reveal'));
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Timeline accordion
+  document.querySelectorAll('.timeline__item').forEach(item => {
+    item.querySelector('.timeline__head').addEventListener('click', () => {
+      const wasOpen = item.classList.contains('is-open');
+      document.querySelectorAll('.timeline__item').forEach(i => i.classList.remove('is-open'));
+      if (!wasOpen) item.classList.add('is-open');
+    });
+  });
+
+  // ---------- Interactive IoT panel ----------
+  const ledSwitch = document.getElementById('ledSwitch');
+  const led = document.getElementById('led');
+  const ledState = document.getElementById('ledState');
+  const tempSlider = document.getElementById('tempSlider');
+  const tempValue = document.getElementById('tempValue');
+  const cloudBtn = document.getElementById('cloudBtn');
+  const consoleEl = document.getElementById('console');
+  const canvas = document.getElementById('chart');
+
+  if (ledSwitch && led && ledState) {
+    let ledOn = false;
+    function toggleLed(){
+      ledOn = !ledOn;
+      ledSwitch.classList.toggle('is-on', ledOn);
+      ledSwitch.setAttribute('aria-checked', ledOn ? 'true' : 'false');
+      led.classList.toggle('is-on', ledOn);
+      ledState.textContent = ledOn ? 'ON' : 'OFF';
+    }
+    ledSwitch.addEventListener('click', toggleLed);
+    ledSwitch.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleLed(); }
+    });
+  }
+
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let history = [27,27,27,27,27,27,27,27,27,27];
+
+    function resizeCanvas(){
+      const dpr = window.devicePixelRatio || 1;
+      const cssW = canvas.parentElement ? canvas.parentElement.clientWidth - 28 : 320;
+      const cssH = 140;
+      canvas.style.width = cssW + 'px';
+      canvas.style.height = cssH + 'px';
+      canvas.width = cssW * dpr;
+      canvas.height = cssH * dpr;
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+
+    function drawChart(){
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      const max = 50, min = 0;
+      const stepX = w / (history.length - 1);
+
+      ctx.strokeStyle = 'rgba(238,242,234,0.08)';
+      ctx.lineWidth = 1;
+      for(let i=1;i<4;i++){
+        const y = (h/4)*i;
+        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
+      }
+
+      ctx.beginPath();
+      ctx.strokeStyle = '#4fd1c5';
+      ctx.lineWidth = 2;
+      history.forEach((v,i) => {
+        const x = i*stepX;
+        const y = h - ((v-min)/(max-min))*h;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+
+      const lastX = (history.length-1)*stepX;
+      const lastY = h - ((history[history.length-1]-min)/(max-min))*h;
+      ctx.beginPath();
+      ctx.fillStyle = '#4fd1c5';
+      ctx.arc(lastX,lastY,3.5,0,Math.PI*2);
+      ctx.fill();
+    }
+
+    resizeCanvas();
+    drawChart();
+    window.addEventListener('resize', () => { resizeCanvas(); drawChart(); });
+  }
+
+  if (tempSlider && tempValue) {
+    let history = [27,27,27,27,27,27,27,27,27,27];
+    tempSlider.addEventListener('input', () => {
+      const v = Number(tempSlider.value);
+      tempValue.textContent = v;
+      history.shift();
+      history.push(v);
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        const w = canvas.clientWidth, h = canvas.clientHeight;
+        ctx.clearRect(0,0,w,h);
+        const max = 50, min = 0;
+        const stepX = w / (history.length - 1);
+
+        ctx.strokeStyle = 'rgba(238,242,234,0.08)';
+        ctx.lineWidth = 1;
+        for(let i=1;i<4;i++){
+          const y = (h/4)*i;
+          ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#4fd1c5';
+        ctx.lineWidth = 2;
+        history.forEach((v2,i) => {
+          const x = i*stepX;
+          const y = h - ((v2-min)/(max-min))*h;
+          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        });
+        ctx.stroke();
+
+        const lastX = (history.length-1)*stepX;
+        const lastY = h - ((history[history.length-1]-min)/(max-min))*h;
+        ctx.beginPath();
+        ctx.fillStyle = '#4fd1c5';
+        ctx.arc(lastX,lastY,3.5,0,Math.PI*2);
+        ctx.fill();
+      }
+    });
+  }
+
+  if (cloudBtn && consoleEl) {
+    let ledOn = false;
+    function logLine(text, tagText){
+      const line = document.createElement('div');
+      const now = new Date();
+      const ts = now.toLocaleTimeString('th-TH', {hour12:false});
+      line.innerHTML = '<span class="tag">[' + ts + ' ' + tagText + ']</span> ' + text;
+      consoleEl.appendChild(line);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    cloudBtn.addEventListener('click', () => {
+      const t = tempValue ? tempValue.textContent : '0';
+      logLine('publish temp=' + t + '&deg;C, led=' + (ledOn ? 'on' : 'off') + ' &rarr; topic: cedt/sensor/room1', 'MQTT');
+      cloudBtn.textContent = 'ส่งแล้ว ✓';
+      setTimeout(() => { cloudBtn.textContent = 'ส่งข้อมูลขึ้นคลาวด์'; }, 1400);
+    });
+  }
+</script>
+
+</body>
+</html>
