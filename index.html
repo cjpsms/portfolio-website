@@ -146,11 +146,12 @@
     transition:transform .12s ease, background .15s ease, border-color .15s ease;
   }
   .btn:hover{transform:translateY(-1px);}
-  .btn--primary{background:var(--teal); color:#04120d;}
-  .btn--primary:hover{background:#6cded3;}
-  .btn--ghost{border-color:var(--line); color:var(--ink);}
-  .btn--ghost:hover{border-color:var(--copper);}
-
+  .btn--primary{background:linear-gradient(135deg, var(--teal), #79e5d9); color:#04120d; box-shadow:0 10px 24px rgba(79,209,197,.18);} 
+  .btn--primary:hover{background:linear-gradient(135deg, #79e5d9, var(--teal));}
+  .btn--ghost{background:rgba(238,242,234,.03); border-color:rgba(238,242,234,.16); color:var(--ink-dim);} 
+  .btn--ghost:hover{border-color:var(--copper); color:var(--ink); background:rgba(209,151,92,.08);} 
+  .btn--soft{background:rgba(209,151,92,.12); border-color:rgba(209,151,92,.28); color:var(--copper-bright);} 
+  .btn--soft:hover{background:rgba(209,151,92,.2); color:var(--copper-bright);}
   /* ---------- section shell ---------- */
   .section{padding:76px 0; border-top:1px solid var(--line);}
   .eyebrow{
@@ -238,10 +239,10 @@
   }
   .code-runner .controls{display:flex; flex-wrap:wrap; gap:10px; margin-top:2px;}
   .code-runner .output{
-    background:#04120d; color:var(--ink); border:1px solid rgba(79,209,197,.22);
+    background:linear-gradient(180deg, #04120d 0%, #071e16 100%); color:#dff9f4; border:1px solid rgba(79,209,197,.28);
     padding:14px; border-radius:10px; min-height:240px; overflow:auto; white-space:pre-wrap;
     font-family:var(--mono); font-size:13.5px; line-height:1.7;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.02), 0 0 18px rgba(79,209,197,.08);
   }
   .mono-hint{font-size:13px; color:var(--ink-dim);}
   .run-btn{padding:10px 14px;}
@@ -504,8 +505,8 @@ for i in range(3):
 </textarea>
           <div class="controls">
             <button id="runPy" class="btn btn--primary run-btn">Run (Python)</button>
-            <button id="clearOut" class="btn btn--ghost" style="font-style: var(--ink-faint);">Clear Output</button>
-            <button id="loadExample" class="btn btn--ghost" style="font-style: var(--ink-faint);">โหลดตัวอย่าง</button>
+            <button id="clearOut" class="btn btn--ghost btn--soft">Clear Output</button>
+            <button id="loadExample" class="btn btn--ghost btn--soft">โหลดตัวอย่าง</button>
           </div>
           <div class="mono-hint">ลองปรับโค้ดเล็กน้อยแล้วกด Run เพื่อดูผลลัพธ์ในคอนโซลด้านขวา</div>
         </div>
