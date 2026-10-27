@@ -21,11 +21,13 @@
       document.fonts.load('500 80px "Noto Sans Thai"', 'ล่ามเชลล์'),
     ])
     : Promise.resolve()).catch(() => {});
+  // never hold the hero back for slow fonts
+  const heroReady = Promise.race([fontsReady, sleep(700)]);
 
   /* ---------- smooth scroll ---------- */
   let lenis = null;
   if (motion && window.Lenis) {
-    lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 1, smoothWheel: true });
+    lenis = new Lenis({ lerp: 0.13, wheelMultiplier: 1, smoothWheel: true });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((t) => lenis.raf(t * 1000));
     gsap.ticker.lagSmoothing(0);
@@ -191,11 +193,11 @@
 
   const heroTw = $('.tw[data-type="hero"]');
   const heroAfter = $('#heroAfter');
-  fontsReady.then(async () => {
-    refresh();
-    await sleep(reduced ? 0 : 300);
-    await type(heroTw, { speed: 40, jitter: 38 });
+  fontsReady.then(refresh);
+  heroReady.then(async () => {
+    // the rest of the hero shows right away; the headline types fast alongside it
     heroAfter.classList.add('is-in');
+    await type(heroTw, { speed: 16, jitter: 14 });
   });
 
   if (motion) {
@@ -281,7 +283,7 @@
     });
     gsap.set(showcase, { borderRadius: 0 });
     scST = ScrollTrigger.create({
-      trigger: wrap, start: 'top top', end: () => '+=' + window.innerHeight * SHOW.length * 0.75, pin: true,
+      trigger: wrap, start: 'top top', end: () => '+=' + window.innerHeight * SHOW.length * 0.45, pin: true,
       onEnter: () => setMorph(true), onEnterBack: () => setMorph(true),
       onLeave: () => setMorph(false), onLeaveBack: () => setMorph(false),
       onUpdate: (s) => {
@@ -356,7 +358,7 @@
       x: () => -dist(), ease: 'none',
       scrollTrigger: {
         trigger: pinEl, pin: pinEl, start: 'top top',
-        end: () => '+=' + Math.max(dist() * 0.8, 1), scrub: 0.7, invalidateOnRefresh: true,
+        end: () => '+=' + Math.max(dist() * 0.55, 1), scrub: 0.35, invalidateOnRefresh: true,
         onUpdate: (s) => { if (bar) bar.style.transform = `scaleX(${s.progress})`; },
       },
     });

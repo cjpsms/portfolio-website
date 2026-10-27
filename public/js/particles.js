@@ -64,6 +64,9 @@
       const count = Math.min(mobile ? o.max * 0.55 : o.max, Math.round((w * h) / o.density));
       if (first || Math.abs(count - this.dots.length) > 40) {
         this.dots = Array.from({ length: count }, () => this.makeDot());
+        // start each dot close to where it belongs so the shape shows at once instead of flying in
+        const now = performance.now();
+        this.dots.forEach((d) => { const [x, y] = this.home(d, now); d.x = x + rand(-40, 40); d.y = y + rand(-40, 40); });
       }
       if (this.text) this.setText(this.text);
       if (reduced) this.draw(0, 0);
@@ -89,8 +92,8 @@
         alpha: rand(o.alpha[0], o.alpha[1]),
         col: o.palette[ci],
         ph: Math.random() * TAU,
-        ease: rand(0.045, 0.11),
-        x: rand(0, this.w || 800), y: rand(0, this.h || 600), // fly in from anywhere
+        ease: rand(0.08, 0.16),
+        x: 0, y: 0,
         ox: 0, oy: 0,
         tx: null, ty: null,
       };
