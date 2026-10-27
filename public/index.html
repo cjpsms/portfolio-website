@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cj — พงษ์นฤดล พูนจิรธนเรือง</title>
+<meta name="description" content="ผลงานของ cj (cjpsms): เครื่องมือบน Linux, เกมสอนเทอร์มินัล, ระบบตรวจโค้ด และของเล่นบนเซิร์ฟเวอร์ที่บ้าน">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23111'/%3E%3Cpath d='M9 11l6 5-6 5M17 22h7' stroke='%23fff' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar" id="topbar">
+  <nav class="topbar__inner">
+    <a href="#top" class="brand" aria-label="กลับขึ้นบนสุด">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32"><path d="M9 11l6 5-6 5M17 22h7" /></svg>
+      </span>
+      cjpsms
+    </a>
+    <ul class="topbar__links" id="navLinks">
+      <li><a href="#work">ผลงาน</a></li>
+      <li><a href="#tools">เครื่องมือ</a></li>
+      <li><a href="#server">เซิร์ฟเวอร์</a></li>
+      <li><a href="#cedt">CEDT</a></li>
+      <li><a href="#contact">ติดต่อ</a></li>
+    </ul>
+    <div class="topbar__actions">
+      <a class="pill pill--dark" href="https://github.com/cjpsms" target="_blank" rel="noopener">
+        <svg class="gh" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+      <button class="menu-btn" id="menuBtn" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ---------- hero ---------- -->
+  <section class="hero">
+    <div class="wrap">
+      <p class="hero__kicker reveal">พงษ์นฤดล พูนจิรธนเรือง · cj</p>
+      <h1 class="hero__title">
+        <span class="hero__static">ผมสร้าง</span>
+        <span class="hero__typed"><span id="typed"></span><span class="caret" aria-hidden="true"></span></span>
+      </h1>
+      <p class="hero__lead reveal">ชอบทำของที่ใช้เองจริงบน Linux ตั้งแต่คำสั่งในเทอร์มินัล บอท ไปจนถึงเซิร์ฟเวอร์ที่บ้าน ทุกอย่างอยู่บน GitHub เปิดดูโค้ดได้หมด</p>
+      <div class="hero__cta reveal">
+        <a class="pill pill--dark pill--lg" href="#work">ดูผลงาน</a>
+        <a class="pill pill--ghost pill--lg" href="https://github.com/cjpsms" target="_blank" rel="noopener">github.com/cjpsms <span class="arrow">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- space stage + live terminal ---------- -->
+  <section class="stage-wrap">
+    <div class="stage reveal" id="stage">
+      <canvas class="stars" id="stars" aria-hidden="true"></canvas>
+      <div class="stage__glow" aria-hidden="true"></div>
+
+      <div class="term term--float" aria-label="ตัวอย่างการใช้งานเครื่องมือในเทอร์มินัล">
+        <div class="term__bar">
+          <span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
+          <span class="term__title">cj@arch: ~</span>
+        </div>
+        <pre class="term__body" id="termBody" aria-live="off"></pre>
+      </div>
+
+      <div class="stage__note">
+        <span class="stage__badge">ตัวอย่าง</span>
+        clauderun · claudeinstall · archinfo
+      </div>
+    </div>
+
+    <div class="stats reveal" id="stats">
+      <div class="stat"><span class="stat__num" id="statRepos">20+</span><span class="stat__label">โปรเจกต์บน GitHub</span></div>
+      <div class="stat"><span class="stat__num" id="statLangs">6</span><span class="stat__label">ภาษาที่ใช้</span></div>
+      <div class="stat"><span class="stat__num">24/7</span><span class="stat__label">เซิร์ฟเวอร์ที่บ้านเปิดตลอด</span></div>
+      <div class="stat"><span class="stat__num">Arch</span><span class="stat__label">linux btw</span></div>
+    </div>
+  </section>
+
+  <!-- ---------- featured work ---------- -->
+  <section class="section" id="work">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="reveal">ผลงานหลัก</h2>
+        <p class="section-head__aside reveal">โปรเจกต์ที่ใช้งานจริง มีคนใช้จริง และใช้เวลาทำนานที่สุด</p>
+      </div>
+
+      <!-- Grader-kak -->
+      <article class="feature">
+        <div class="feature__text reveal">
+          <p class="feature__eyebrow">JavaScript · Node.js</p>
+          <h3>Grader-kak</h3>
+          <p>ระบบตรวจโค้ดออนไลน์ของโรงเรียน นักเรียนส่ง C++17 หรือ Python 3 แล้วตรวจกับเทสต์ลับ ครูแก้โจทย์และเทสต์ได้บนเว็บ โค้ดของนักเรียนรันในกล่องแยก (bubblewrap) ไม่มีเน็ต แตะไฟล์เซิร์ฟเวอร์ไม่ได้ และถูกตัดเมื่อเกินเวลา</p>
+          <div class="chips"><span>Express</span><span>bubblewrap</span><span>cgroup</span><span>C++ / Python</span></div>
+          <a class="link-arrow" href="https://github.com/cjpsms/Grader-kak" target="_blank" rel="noopener">ดูโค้ด <span class="arrow">&rarr;</span></a>
+        </div>
+        <div class="feature__visual reveal">
+          <div class="glow-frame">
+            <div class="mock mock--light">
+              <div class="mock__tabs"><span class="is-active">ผลการตรวจ</span><span>โจทย์</span><span>อันดับ</span></div>
+              <div class="verdicts" id="verdicts">
+                <div class="verdict"><span class="verdict__name">A1 · ผลรวมเลขคู่</span><span class="verdict__bar"><i style="--w:100%"></i></span><span class="tagv tagv--ok">ผ่าน 10/10</span></div>
+                <div class="verdict"><span class="verdict__name">A2 · หาทางในเขาวงกต</span><span class="verdict__bar"><i style="--w:70%"></i></span><span class="tagv tagv--tle">เกินเวลา 7/10</span></div>
+                <div class="verdict"><span class="verdict__name">B1 · จัดตารางสอบ</span><span class="verdict__bar"><i style="--w:40%"></i></span><span class="tagv tagv--wa">ผิด 4/10</span></div>
+                <div class="verdict"><span class="verdict__name">B2 · สะพานข้ามแม่น้ำ</span><span class="verdict__bar"><i style="--w:100%"></i></span><span class="tagv tagv--ok">ผ่าน 10/10</span></div>
+              </div>
+              <pre class="mock__code"><span class="k">int</span> main() {
+  <span class="k">long long</span> n, s = <span class="n">0</span>;
+  cin &gt;&gt; n;
+  <span class="k">for</span> (<span class="k">int</span> i = <span class="n">2</span>; i &lt;= n; i += <span class="n">2</span>) s += i;
+  cout &lt;&lt; s;
+}</pre>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- LamShell -->
+      <article class="feature feature--flip">
+        <div class="feature__text reveal">
+          <p class="feature__eyebrow">เกม · เล่นได้บนเว็บ</p>
+          <h3>ล่ามเชลล์ (LamShell)</h3>
+          <p>เกมสอนเทอร์มินัล Linux ให้นักเรียน ม.ปลาย 44 ด่าน ช่วงแรกพิมพ์ไทยมั่ว ๆ ได้ AI จะแปลเป็นคำสั่งให้ แล้วค่อย ๆ เข้มขึ้นจนต้องพิมพ์คำสั่งจริงพร้อม pipe มีหน้าครูดูความคืบหน้าทั้งห้องแบบสด</p>
+          <div class="chips"><span>Shell จำลอง</span><span>AI แปลภาษาไทย</span><span>SQLite</span><span>หน้าครู</span></div>
+          <div class="link-row">
+            <a class="link-arrow" href="https://cjpsms.github.io/lamshell/" target="_blank" rel="noopener">ลองเล่น <span class="arrow">&rarr;</span></a>
+            <a class="link-arrow link-arrow--muted" href="https://github.com/cjpsms/lamshell" target="_blank" rel="noopener">ดูโค้ด <span class="arrow">&rarr;</span></a>
+          </div>
+        </div>
+        <div class="feature__visual reveal">
+          <div class="dark-card">
+            <canvas class="stars stars--mini" aria-hidden="true"></canvas>
+            <div class="term term--inset">
+              <div class="term__bar"><span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span><span class="term__title">ด่าน 3 · หาไฟล์ที่หายไป</span></div>
+<pre class="term__body"><span class="c-dim">ป้าเซิร์ฟ: ลองดูซิว่าในห้องนี้มีไฟล์อะไรบ้าง</span>
+
+<span class="c-green">นักเรียน@lamshell</span>:<span class="c-blue">~</span>$ ขอดูไฟล์หน่อย
+<span class="c-dim"># AI แปลว่า</span> <span class="c-amber">ls</span>
+การบ้าน.txt  รูปแมว.png  <span class="c-blue">ลับสุดยอด/</span>
+
+<span class="c-green">นักเรียน@lamshell</span>:<span class="c-blue">~</span>$ เข้าไปในโฟลเดอร์ลับ
+<span class="c-dim"># AI แปลว่า</span> <span class="c-amber">cd ลับสุดยอด</span>
+<span class="c-green">ผ่านด่าน</span> ★★★</pre>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- openbox -->
+      <article class="feature">
+        <div class="feature__text reveal">
+          <p class="feature__eyebrow">Python · FastAPI · STM32</p>
+          <h3>openbox</h3>
+          <p>ตู้ล็อกเกอร์รับพัสดุ ลูกค้าส่งภาพคำสั่งซื้อให้บอท Telegram แล้ว AI อ่านรายละเอียดให้ เลือกขนาดช่อง จ่ายเงินแล้วตรวจสลิปอัตโนมัติ ไรเดอร์เอาพัสดุมาส่อง กล้องอ่านฉลากแล้วเปิดช่องที่จองไว้ให้</p>
+          <div class="chips"><span>บอท Telegram</span><span>AI อ่านภาพ</span><span>ตรวจสลิป</span><span>STM32</span></div>
+          <a class="link-arrow" href="https://github.com/cjpsms/openbox" target="_blank" rel="noopener">ดูโค้ด <span class="arrow">&rarr;</span></a>
+        </div>
+        <div class="feature__visual reveal">
+          <div class="glow-frame glow-frame--alt">
+            <div class="mock mock--chat">
+              <div class="chat__head"><span class="chat__avatar">ob</span><div><b>OPENxBOX</b><small>บอท</small></div></div>
+              <div class="bubble bubble--me"><span class="bubble__img">ภาพคำสั่งซื้อ.jpg</span></div>
+              <div class="bubble">อ่านคำสั่งซื้อแล้ว<br><b>หูฟังไร้สาย × 1</b><br>ร้าน: TechMall · ฿890<br>ถูกต้องไหม</div>
+              <div class="chat__choices"><span>ถูกต้อง</span><span>แก้ไข</span></div>
+              <div class="bubble">เลือกขนาดช่อง</div>
+              <div class="chat__choices"><span>S</span><span class="is-picked">M</span><span>L</span></div>
+              <div class="bubble bubble--ok">ตรวจสลิปผ่าน · จองช่อง M-04 แล้ว</div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ---------- tools carousel (from /api/repos) ---------- -->
+  <section class="section section--tint" id="tools">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="reveal">เครื่องมือเล็ก ๆ ที่ใช้เองทุกวัน</h2>
+        <p class="section-head__aside reveal">ดึงสดจาก GitHub · <span id="repoSource">กำลังโหลด</span></p>
+      </div>
+      <div class="filters reveal" id="filters" role="tablist" aria-label="กรองตามหมวด"></div>
+    </div>
+    <div class="rail-wrap">
+      <div class="rail" id="rail" tabindex="0" aria-label="รายการโปรเจกต์"></div>
+    </div>
+    <div class="wrap rail-nav">
+      <button class="round-btn" id="railPrev" aria-label="เลื่อนซ้าย">&larr;</button>
+      <button class="round-btn" id="railNext" aria-label="เลื่อนขวา">&rarr;</button>
+    </div>
+  </section>
+
+  <!-- ---------- home server ---------- -->
+  <section class="section" id="server">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="reveal">เซิร์ฟเวอร์ที่บ้าน</h2>
+        <p class="section-head__aside reveal">เครื่อง Ubuntu หนึ่งเครื่องที่รันทุกอย่างเอง ตั้งค่า ดูแล และแก้ตอนมันพังเอง</p>
+      </div>
+      <div class="server-grid">
+        <div class="svc reveal"><span class="svc__led"></span><h4>Ollama + Open WebUI</h4><p>รันโมเดล AI ในเครื่องเอง ใช้ผ่านเว็บ และเป็นด่านล็อกอินให้แอปอื่นบนเครื่อง</p></div>
+        <div class="svc reveal"><span class="svc__led"></span><h4>Grader-kak</h4><p>ระบบตรวจโค้ดของโรงเรียน รันเป็น service ตลอด 24 ชั่วโมง</p></div>
+        <div class="svc reveal"><span class="svc__led"></span><h4>บอท Telegram / Discord</h4><p>บอทหลายตัว ทั้งผู้ช่วย AI และบอทแจ้งข้อความสำคัญ</p></div>
+        <div class="svc reveal"><span class="svc__led svc__led--off"></span><h4>Minecraft Server</h4><p>เคยเปิดให้เพื่อนเล่น ตั้งค่าเอง สำรองข้อมูลทุกสัปดาห์ ตอนนี้เก็บเข้ากรุแล้ว</p></div>
+        <div class="svc reveal"><span class="svc__led"></span><h4>สำรองข้อมูล + รีบูต</h4><p>ทุกวันอาทิตย์ตีสี่ สำรองข้อมูลอัตโนมัติแล้วรีบูตเครื่อง</p></div>
+        <div class="svc reveal"><span class="svc__led"></span><h4>Cloudflare Tunnel</h4><p>เปิดเว็บออกอินเทอร์เน็ตโดยไม่ต้องเปิดพอร์ตบ้าน</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- skills ---------- -->
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="reveal">ใช้อะไรบ้าง</h2>
+      </div>
+      <div class="skills reveal">
+        <div class="skill-group"><h4>ภาษา</h4><div class="chips chips--lg"><span>Python</span><span>JavaScript / Node.js</span><span>C / C++</span><span>Bash</span><span>TypeScript</span><span>Kotlin</span></div></div>
+        <div class="skill-group"><h4>ระบบ</h4><div class="chips chips--lg"><span>Arch Linux</span><span>Ubuntu Server</span><span>systemd</span><span>Hyprland / niri</span><span>Git &amp; GitHub</span></div></div>
+        <div class="skill-group"><h4>ฮาร์ดแวร์</h4><div class="chips chips--lg"><span>ESP32 / Arduino</span><span>STM32 (bare-metal)</span><span>Raspberry Pi Pico W</span><span>ต่อวงจร</span></div></div>
+        <div class="skill-group"><h4>AI</h4><div class="chips chips--lg"><span>Claude API / CLI</span><span>Ollama</span><span>AI อ่านภาพ</span><span>เสียงพูด (TTS / STT)</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- CEDT (kept at the bottom) ---------- -->
+  <section class="section section--cedt" id="cedt">
+    <div class="wrap">
+      <div class="cedt">
+        <div class="cedt__intro reveal">
+          <p class="feature__eyebrow">วิศวกรรมคอมพิวเตอร์และเทคโนโลยีดิจิทัล · จุฬาฯ</p>
+          <h2>ทำไมถึงเลือก CEDT</h2>
+          <p>ผมเริ่มสนใจด้านนี้จากการต่อวงจร LED ตัวแรกแล้วมันไม่ติด ต้องนั่งไล่หาว่าขาไหนผิด จากตรงนั้นก็ค่อย ๆ ขยับมาเขียนโค้ดควบคุมเซนเซอร์ จนรู้ว่าสิ่งที่ชอบจริง ๆ คือจุดที่ฮาร์ดแวร์กับซอฟต์แวร์มาเจอกัน</p>
+          <p>CEDT ออกแบบมาให้เรียนแบบลงมือทำจริงตั้งแต่ปีแรก มีฝึกงานทุกปีและทำงานร่วมกับบริษัทเทคโนโลยีตลอดหลักสูตร ตรงกับสิ่งที่ผมอยากได้ คือได้ทดลองของจริง ไม่ใช่แค่ทฤษฎีในห้องเรียน</p>
+          <p>เป้าหมายคือเป็นวิศวกรที่ทำงานได้ตั้งแต่ระดับวงจรไปจนถึงซอฟต์แวร์ที่คุยกับอุปกรณ์เหล่านั้น โดยเฉพาะสาย IoT และระบบฝังตัว</p>
+          <ul class="facts">
+            <li><b>300</b><span>รับนิสิตต่อปี</span></li>
+            <li><b>ไม่ตัดเกรด</b><span>เทอมแรก</span></li>
+            <li><b>ทุกปี</b><span>ฝึกงานภาคอุตสาหกรรม</span></li>
+            <li><b>Friday</b><span>กิจกรรมร่วมบริษัท</span></li>
+          </ul>
+        </div>
+
+        <div class="timeline reveal" id="timeline">
+          <p class="timeline__label">แผนที่วางไว้ใน CEDT</p>
+          <button class="tl is-open" aria-expanded="true">
+            <span class="tl__year">ปี 1</span>
+            <span class="tl__main"><b>ปูพื้นฐาน</b><span class="tl__body">คณิตศาสตร์ การเขียนโปรแกรมพื้นฐาน และเข้าร่วม Friday Activities เพื่อเห็นงานจริงจากบริษัทตั้งแต่เทอมแรก</span></span>
+          </button>
+          <button class="tl" aria-expanded="false">
+            <span class="tl__year">ปี 2</span>
+            <span class="tl__main"><b>แยกสาย ฮาร์ดแวร์ / ซอฟต์แวร์</b><span class="tl__body">ลงลึกเรื่องระบบฝังตัวและโครงสร้างข้อมูล เริ่มโปรเจกต์กลุ่มที่ต้องใช้ทั้งสองด้าน</span></span>
+          </button>
+          <button class="tl" aria-expanded="false">
+            <span class="tl__year">ปี 3</span>
+            <span class="tl__main"><b>ฝึกงานภาคอุตสาหกรรม</b><span class="tl__body">ฝึกงานกับบริษัทเทคโนโลยีจริง เอาปัญหาจากหน้างานกลับมาต่อยอดเป็นหัวข้อโปรเจกต์</span></span>
+          </button>
+          <button class="tl" aria-expanded="false">
+            <span class="tl__year">ปี 4</span>
+            <span class="tl__main"><b>โปรเจกต์จบ</b><span class="tl__body">ทำโปรเจกต์จบร่วมกับภาคอุตสาหกรรม เลือกหัวข้อสาย IoT ที่ต่อยอดจากผลงานที่สะสมมา</span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- contact ---------- -->
+  <section class="section" id="contact">
+    <div class="wrap">
+      <div class="contact reveal">
+        <h2>คุยกันได้</h2>
+        <p>สนใจโปรเจกต์ไหน อยากถามเรื่องโค้ด หรือชวนทำอะไรด้วยกัน ส่งมาได้เลย</p>
+        <div class="hero__cta">
+          <a class="pill pill--dark pill--lg" href="mailto:cj.psms@gmail.com">cj.psms@gmail.com</a>
+          <a class="pill pill--ghost pill--lg" href="https://github.com/cjpsms" target="_blank" rel="noopener">GitHub <span class="arrow">&rarr;</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <span class="brand brand--sm"><span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 11l6 5-6 5M17 22h7" /></svg></span>cjpsms</span>
+    <span class="footer__meta">© 2026 พงษ์นฤดล พูนจิรธนเรือง · Node.js + HTML/CSS/JS ล้วน</span>
+  </div>
+</footer>
+
+<script src="js/stars.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
