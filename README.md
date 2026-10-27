@@ -20,8 +20,8 @@ server.js            เสิร์ฟไฟล์ใน public/ และ /api
 data/projects.json   คำอธิบายภาษาไทย + หมวดของแต่ละโปรเจกต์
 public/index.html    หน้าเว็บ
 public/css/style.css
-public/js/main.js    พิมพ์หัวเรื่อง, เทอร์มินัลตัวอย่าง, รายการโปรเจกต์, ไทม์ไลน์
-public/js/stars.js   พื้นหลังดาว
+public/js/main.js    พิมพ์หัวเรื่อง, การ์ดโชว์โปรเจกต์, วงไอคอน, รายการโปรเจกต์
+public/js/vortex.js  วงจุดหมุนในการ์ดดำ
 ```
 
 `/api/repos` ดึงรายการ repo สาธารณะของ `GH_USER` จาก GitHub API (แคช 10 นาที) แล้วรวมกับ `data/projects.json`

@@ -1,178 +1,179 @@
 (function () {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  /* ---------- top bar ---------- */
-  const topbar = document.getElementById('topbar');
-  const menuBtn = document.getElementById('menuBtn');
-  const navLinks = document.getElementById('navLinks');
-  const onScroll = () => topbar.classList.toggle('is-scrolled', window.scrollY > 8);
+  /* ---------- header ---------- */
+  const header = document.getElementById('header');
+  const menu = document.getElementById('menu');
+  const nav = document.getElementById('nav');
+  const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 4);
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
-  function setMenu(open) {
-    navLinks.classList.toggle('is-open', open);
-    menuBtn.setAttribute('aria-expanded', String(open));
-  }
-  menuBtn.addEventListener('click', () => setMenu(!navLinks.classList.contains('is-open')));
-  navLinks.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+  const setMenu = (open) => { nav.classList.toggle('is-open', open); menu.setAttribute('aria-expanded', String(open)); };
+  menu.addEventListener('click', () => setMenu(!nav.classList.contains('is-open')));
+  nav.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
 
-  /* ---------- reveal on scroll ---------- */
+  /* ---------- reveal ---------- */
   const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-  function observeReveal(root) { root.querySelectorAll('.reveal:not(.is-visible)').forEach((el) => io.observe(el)); }
-  observeReveal(document);
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
-  /* ---------- hero typing ---------- */
-  const typedEl = document.getElementById('typed');
-  const caret = document.querySelector('.caret');
-  const phrases = [
-    'เครื่องมือบน Linux',
-    'เกมสอนเทอร์มินัล',
-    'ระบบตรวจโค้ด',
-    'บอทที่ใช้ AI',
-    'ตู้ล็อกเกอร์อัจฉริยะ',
-    'เซิร์ฟเวอร์ที่บ้าน',
-  ];
-  // Thai combining marks must stay with their base letter, so split by grapheme.
-  const seg = typeof Intl !== 'undefined' && Intl.Segmenter ? new Intl.Segmenter('th', { granularity: 'grapheme' }) : null;
+  /* ---------- typewriter ---------- */
+  // Thai combining marks must stay with their base letter, so step by grapheme.
+  const seg = window.Intl && Intl.Segmenter ? new Intl.Segmenter('th', { granularity: 'grapheme' }) : null;
   const graphemes = (s) => (seg ? Array.from(seg.segment(s), (x) => x.segment) : Array.from(s));
 
-  async function typeLoop() {
-    if (reduced) { typedEl.textContent = phrases[0]; return; }
-    let i = 0;
-    for (;;) {
-      const g = graphemes(phrases[i]);
-      caret.classList.add('is-typing');
-      for (let k = 1; k <= g.length; k++) { typedEl.textContent = g.slice(0, k).join(''); await sleep(70 + Math.random() * 60); }
-      caret.classList.remove('is-typing');
-      await sleep(1900);
-      caret.classList.add('is-typing');
-      for (let k = g.length - 1; k >= 0; k--) { typedEl.textContent = g.slice(0, k).join(''); await sleep(32); }
-      await sleep(260);
-      i = (i + 1) % phrases.length;
-    }
+  // ghost text -> [{g: grapheme, em: bool}] so gray <em> parts keep their colour while typing
+  function units(ghost) {
+    const out = [];
+    ghost.childNodes.forEach((n) => {
+      const em = n.nodeType === 1 && n.tagName === 'EM';
+      graphemes(n.textContent).forEach((g) => out.push({ g, em }));
+    });
+    return out;
   }
-  typeLoop();
+  function html(list) {
+    let s = '', inEm = false;
+    for (const u of list) {
+      if (u.em !== inEm) { s += u.em ? '<em>' : '</em>'; inEm = u.em; }
+      s += esc(u.g);
+    }
+    return inEm ? s + '</em>' : s;
+  }
+  async function type(tw, { speed = 38, jitter = 30 } = {}) {
+    const live = tw.querySelector('.tw__live');
+    const list = units(tw.querySelector('.tw__ghost'));
+    if (reduced) { live.innerHTML = html(list); return; }
+    tw.classList.add('is-typing');
+    for (let i = 1; i <= list.length; i++) {
+      live.innerHTML = html(list.slice(0, i));
+      await sleep(speed + Math.random() * jitter);
+    }
+    tw.classList.remove('is-typing');
+    tw.classList.add('is-done');
+  }
 
-  /* ---------- terminal demo on the stage ---------- */
-  const termBody = document.getElementById('termBody');
-  const PROMPT = '<span class="c-green">cj@arch</span>:<span class="c-blue">~</span>$ ';
-  const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-  const scenes = [
-    {
-      cmd: 'clauderun "หาไฟล์ที่ใหญ่ที่สุด 5 อัน"',
-      out: [
-        '<span class="c-dim">คิดอยู่...</span>',
-        '<span class="c-amber">du -ah . | sort -rh | head -5</span>',
-        'รันเลยไหม [y/N] y',
-        '<span class="c-dim">2.1G</span>  ./Videos/trip.mkv',
-        '<span class="c-dim">840M</span>  ./Downloads/arch.iso',
-        '<span class="c-dim">312M</span>  ./program/fly-brain-sim/data',
-      ],
-    },
-    {
-      cmd: 'claudeinstall "โปรแกรมตัดต่อวิดีโอ"',
-      out: [
-        '<span class="c-dim">ไม่เจอชื่อตรง ๆ ถาม AI...</span>',
-        'เจอ <span class="c-pink">kdenlive</span> ใน <span class="c-blue">pacman</span> (extra)',
-        '<span class="c-amber">sudo pacman -S kdenlive</span>',
-        'ติดตั้งเลยไหม [y/N] y',
-        '<span class="c-green">ติดตั้งเสร็จแล้ว</span>',
-      ],
-    },
-    {
-      cmd: 'archinfo --once',
-      out: [
-        '<span class="c-blue">arch</span> · linux 7.2 · up 3d 4h',
-        'cpu   <span class="c-green">████░░░░░░</span> 38%  52°C',
-        'ram   <span class="c-amber">██████░░░░</span> 9.4/16G',
-        'disk  <span class="c-green">███░░░░░░░</span> 31%',
-        'net   <span class="c-green">online</span>  ↓ 4.2 MB/s  ↑ 310 KB/s',
-        'pacman  <span class="c-pink">12</span> อัปเดตรออยู่',
-      ],
-    },
+  // hero types on load, then the rest of the hero fades in
+  const heroTw = document.querySelector('.tw[data-type="hero"]');
+  const heroAfter = document.getElementById('heroAfter');
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(async () => {
+    await sleep(reduced ? 0 : 350);
+    await type(heroTw, { speed: 42, jitter: 40 });
+    heroAfter.classList.add('is-in');
+  });
+
+  // the rest type once scrolled into view
+  const typeIo = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { typeIo.unobserve(e.target); type(e.target, { speed: 24, jitter: 20 }); } });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('.tw[data-type="scroll"]').forEach((el) => typeIo.observe(el));
+
+  /* ---------- showcase card ---------- */
+  const SHOW = [
+    { name: 'Grader-kak', kicker: 'ระบบตรวจโค้ด · JavaScript', desc: 'ระบบตรวจโค้ดออนไลน์ที่ทำกับเพื่อนที่ค่าย สอวน' },
+    { name: 'ล่ามเชลล์', kicker: 'เกม · เล่นได้บนเว็บ', desc: 'เกมสอนใช้ Linux ให้นักเรียน พิมพ์ไทยได้ AI แปลเป็นคำสั่งให้' },
+    { name: 'openbox', kicker: 'ฮาร์ดแวร์ + AI · Python', desc: 'ตู้ล็อกเกอร์รับพัสดุ สั่งผ่านบอท Telegram' },
+    { name: 'claudeinstall', kicker: 'เครื่องมือ Linux · Python', desc: 'ติดตั้งโปรแกรมด้วยคำอธิบายภาษาคน' },
+    { name: 'sensor-AI', kicker: 'ฮาร์ดแวร์ + AI · TypeScript', desc: 'ผู้ช่วยสั่งงานในบ้านด้วยเสียง ผ่าน Raspberry Pi Pico W' },
   ];
+  const DUR = 4500;
+  const showcase = document.getElementById('showcase');
+  const scContent = showcase.querySelector('.showcase__content');
+  const scKicker = document.getElementById('scKicker');
+  const scTitle = document.getElementById('scTitle');
+  const scDesc = document.getElementById('scDesc');
+  const scDots = document.getElementById('scDots');
+  let scIndex = 0, scTimer = 0, scVisible = false;
 
-  async function termLoop() {
-    if (!termBody) return;
-    let lines = [];
-    const render = (extra = '') => { termBody.innerHTML = lines.join('\n') + (extra ? '\n' + extra : ''); };
-    if (reduced) {
-      const s = scenes[0];
-      termBody.innerHTML = PROMPT + esc(s.cmd) + '\n' + s.out.join('\n');
-      return;
-    }
-    for (let i = 0; ; i = (i + 1) % scenes.length) {
-      const s = scenes[i];
-      lines = [];
-      const g = graphemes(s.cmd);
-      for (let k = 0; k <= g.length; k++) {
-        termBody.innerHTML = PROMPT + esc(g.slice(0, k).join('')) + '<span class="cursor-block"></span>';
-        await sleep(k === 0 ? 700 : 45 + Math.random() * 55);
-      }
-      lines.push(PROMPT + esc(s.cmd));
-      await sleep(350);
-      for (const line of s.out) { lines.push(line); render(); await sleep(260 + Math.random() * 260); }
-      render(PROMPT + '<span class="cursor-block"></span>');
-      await sleep(2600);
-    }
+  const dots = SHOW.map((s, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-label', s.name);
+    b.style.setProperty('--dur', DUR + 'ms');
+    b.addEventListener('click', () => go(i));
+    scDots.appendChild(b);
+    return b;
+  });
+  function paintDots() {
+    dots.forEach((d, i) => {
+      d.classList.remove('is-on');
+      d.classList.toggle('is-done', i < scIndex);
+      d.setAttribute('aria-selected', String(i === scIndex));
+    });
+    void dots[scIndex].offsetWidth; // restart the fill animation
+    if (scVisible && !reduced) dots[scIndex].classList.add('is-on');
   }
-  // start the terminal only once the stage is on screen
-  const stage = document.getElementById('stage');
-  if (stage) {
-    const so = new IntersectionObserver(([e]) => { if (e.isIntersecting) { so.disconnect(); termLoop(); } });
-    so.observe(stage);
+  async function go(i) {
+    clearTimeout(scTimer);
+    scIndex = (i + SHOW.length) % SHOW.length;
+    scContent.classList.add('is-out');
+    await sleep(reduced ? 0 : 380);
+    const s = SHOW[scIndex];
+    scKicker.textContent = s.kicker; scTitle.textContent = s.name; scDesc.textContent = s.desc;
+    scContent.classList.remove('is-out');
+    paintDots();
+    if (scVisible && !reduced) scTimer = setTimeout(() => go(scIndex + 1), DUR);
   }
+  new IntersectionObserver(([e]) => {
+    scVisible = e.isIntersecting;
+    clearTimeout(scTimer);
+    if (scVisible) { paintDots(); if (!reduced) scTimer = setTimeout(() => go(scIndex + 1), DUR); }
+  }, { threshold: 0.3 }).observe(showcase);
+  paintDots();
 
-  /* ---------- timeline accordion ---------- */
-  const tls = document.querySelectorAll('.tl');
-  tls.forEach((tl) => tl.addEventListener('click', () => {
-    const open = !tl.classList.contains('is-open');
-    tls.forEach((t) => { t.classList.remove('is-open'); t.setAttribute('aria-expanded', 'false'); });
-    if (open) { tl.classList.add('is-open'); tl.setAttribute('aria-expanded', 'true'); }
-  }));
+  /* ---------- arc of icons ---------- */
+  const arc = document.getElementById('arc');
+  const arcItems = Array.from(arc.children);
+  function layoutArc() {
+    const w = arc.clientWidth, h = arc.clientHeight;
+    const shown = arcItems.filter((el) => getComputedStyle(el).display !== 'none');
+    const n = shown.length;
+    const pad = Math.min(60, w * 0.06);
+    shown.forEach((el, i) => {
+      const t = n === 1 ? 0.5 : i / (n - 1);
+      const x = pad + t * (w - pad * 2);
+      const y = h - 30 - Math.sin(Math.PI * t) * (h - 70);
+      el.style.setProperty('--x', x + 'px');
+      el.style.setProperty('--y', y + 'px');
+      el.style.setProperty('--d', (-i * 0.4) + 's');
+    });
+  }
+  new ResizeObserver(layoutArc).observe(arc);
 
-  /* ---------- tools rail (from /api/repos) ---------- */
-  const LANG_COLORS = {
-    Python: '#3572A5', JavaScript: '#f1e05a', TypeScript: '#3178c6', Shell: '#89e051',
-    Kotlin: '#A97BFF', 'C++': '#f34b7d', C: '#555555', HTML: '#e34c26', CSS: '#663399', Lua: '#000080', QML: '#44a51c',
+  /* ---------- project rail (from /api/repos) ---------- */
+  const COVERS = {
+    Python: ['#2a63c9', '#e0b31a'], JavaScript: ['#c9a400', '#e8590c'], TypeScript: ['#1f6feb', '#7c4dff'],
+    Shell: ['#2f9e44', '#1c7ed6'], Kotlin: ['#7c4dff', '#e64980'], 'C++': ['#d6336c', '#5f3dc4'],
   };
   const rail = document.getElementById('rail');
   const filtersEl = document.getElementById('filters');
   const sourceEl = document.getElementById('repoSource');
   const prev = document.getElementById('railPrev');
   const next = document.getElementById('railNext');
-
   const dateFmt = new Intl.DateTimeFormat('th-TH', { month: 'short', year: 'numeric' });
 
   function card(r) {
     const el = document.createElement('article');
     el.className = 'card';
     el.dataset.tags = (r.tags || []).join('|');
-    const lang = r.language ? `<span class="card__lang" style="--c:${LANG_COLORS[r.language] || '#9aa0a6'}"><i></i>${esc(r.language)}</span>` : '<span></span>';
-    const tags = (r.tags || []).slice(0, 2).map((t) => `<span>${esc(t)}</span>`).join('');
-    const when = r.updated ? `<time datetime="${r.updated}">${dateFmt.format(new Date(r.updated))}</time>` : '<span></span>';
-    const live = r.homepage ? `<a href="${encodeURI(r.homepage)}" target="_blank" rel="noopener">ลองเล่น <span class="arrow">&rarr;</span></a>` : '';
+    const [c1, c2] = COVERS[r.language] || ['#3c4a63', '#5b4b8a'];
+    const meta = [r.language, r.updated ? dateFmt.format(new Date(r.updated)) : null].filter(Boolean).map((m) => `<span>${esc(m)}</span>`).join('');
+    const live = r.homepage ? `<a href="${esc(r.homepage)}" target="_blank" rel="noopener">ลองเล่น</a>` : '';
     el.innerHTML = `
-      <div class="card__top">${lang}<span class="card__tags">${tags}</span></div>
+      <a class="card__cover" href="${esc(r.url)}" target="_blank" rel="noopener" style="--c1:${c1};--c2:${c2}" tabindex="-1" aria-hidden="true"><span>${esc(r.name)}</span></a>
       <h3>${esc(r.name)}</h3>
+      <div class="card__meta">${meta}</div>
       <p>${esc(r.th || '')}</p>
-      <div class="card__foot">${when}<span style="display:flex;gap:16px">${live}<a href="${encodeURI(r.url)}" target="_blank" rel="noopener">โค้ด <span class="arrow">&rarr;</span></a></span></div>`;
+      <div class="card__links">${live}<a href="${esc(r.url)}" target="_blank" rel="noopener">ดูโค้ด</a></div>`;
     return el;
   }
 
   function updateNav() {
-    const max = rail.scrollWidth - rail.clientWidth - 2;
     prev.disabled = rail.scrollLeft <= 2;
-    next.disabled = rail.scrollLeft >= max;
+    next.disabled = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 2;
   }
-  function step() {
-    const c = rail.querySelector('.card:not(.is-hidden)');
-    return c ? c.getBoundingClientRect().width + 16 : 320;
-  }
+  const step = () => { const c = rail.querySelector('.card:not(.is-hidden)'); return c ? c.getBoundingClientRect().width + 20 : 320; };
   prev.addEventListener('click', () => rail.scrollBy({ left: -step() * 2 }));
   next.addEventListener('click', () => rail.scrollBy({ left: step() * 2 }));
   rail.addEventListener('scroll', updateNav, { passive: true });
@@ -185,14 +186,12 @@
     filtersEl.innerHTML = '';
     tags.forEach((t, i) => {
       const b = document.createElement('button');
-      b.className = 'filter'; b.type = 'button'; b.role = 'tab';
+      b.className = 'filter'; b.type = 'button'; b.setAttribute('role', 'tab');
       b.textContent = t; b.setAttribute('aria-selected', String(i === 0));
       b.addEventListener('click', () => {
         filtersEl.querySelectorAll('.filter').forEach((x) => x.setAttribute('aria-selected', 'false'));
         b.setAttribute('aria-selected', 'true');
-        rail.querySelectorAll('.card').forEach((c) => {
-          c.classList.toggle('is-hidden', i !== 0 && !c.dataset.tags.split('|').includes(t));
-        });
+        rail.querySelectorAll('.card').forEach((c) => c.classList.toggle('is-hidden', i !== 0 && !c.dataset.tags.split('|').includes(t)));
         rail.scrollTo({ left: 0 });
         requestAnimationFrame(updateNav);
       });
@@ -200,26 +199,19 @@
     });
   }
 
-  async function loadRepos() {
-    try {
-      const res = await fetch('/api/repos');
-      if (!res.ok) throw new Error(res.status);
-      const data = await res.json();
-      const tools = data.repos.filter((r) => !r.featured);
+  fetch('/api/repos')
+    .then((res) => { if (!res.ok) throw new Error(res.status); return res.json(); })
+    .then((data) => {
+      const others = data.repos.filter((r) => !r.featured);
       rail.innerHTML = '';
-      tools.forEach((r) => rail.appendChild(card(r)));
-      buildFilters(tools);
-      sourceEl.textContent = data.source === 'github' ? `${data.repos.length} โปรเจกต์` : 'ตอนนี้ต่อ GitHub ไม่ได้ ใช้รายการในเครื่องแทน';
-
-      const langs = new Set(data.repos.map((r) => r.language).filter(Boolean));
-      document.getElementById('statRepos').textContent = data.repos.length;
-      if (langs.size) document.getElementById('statLangs').textContent = langs.size;
+      others.forEach((r) => rail.appendChild(card(r)));
+      buildFilters(others);
+      sourceEl.textContent = data.source === 'github' ? `${data.repos.length} โปรเจกต์ · อัปเดตจาก GitHub` : 'ต่อ GitHub ไม่ได้ ใช้รายการในเครื่องแทน';
       updateNav();
-    } catch (err) {
+    })
+    .catch(() => {
       sourceEl.textContent = 'โหลดรายการไม่สำเร็จ';
-      rail.innerHTML = '<article class="card"><h3>ดูทั้งหมดบน GitHub</h3><p>โหลดรายการโปรเจกต์ไม่สำเร็จ ลองเปิดหน้า GitHub โดยตรง</p><div class="card__foot"><span></span><a href="https://github.com/cjpsms?tab=repositories" target="_blank" rel="noopener">github.com/cjpsms <span class="arrow">&rarr;</span></a></div></article>';
+      rail.innerHTML = '<article class="card"><h3>ดูทั้งหมดบน GitHub</h3><p>โหลดรายการโปรเจกต์ไม่สำเร็จ ลองเปิดหน้า GitHub โดยตรง</p><div class="card__links"><a href="https://github.com/cjpsms?tab=repositories" target="_blank" rel="noopener">github.com/cjpsms</a></div></article>';
       updateNav();
-    }
-  }
-  loadRepos();
+    });
 })();
