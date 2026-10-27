@@ -139,21 +139,24 @@
   // Thai combining marks must stay with their base letter, so step by grapheme.
   const seg = window.Intl && Intl.Segmenter ? new Intl.Segmenter('th', { granularity: 'grapheme' }) : null;
   const graphemes = (s) => (seg ? Array.from(seg.segment(s), (x) => x.segment) : Array.from(s));
+  // ghost text -> [{g, tag}] so inline <em> (gray) and <span class="nw"> (no line break) survive typing
   function units(ghost) {
     const out = [];
     ghost.childNodes.forEach((n) => {
-      const em = n.nodeType === 1 && n.tagName === 'EM';
-      graphemes(n.textContent).forEach((g) => out.push({ g, em }));
+      const tag = n.nodeType === 1 ? (n.tagName === 'EM' ? 'em' : 'nw') : '';
+      graphemes(n.textContent).forEach((g) => out.push({ g, tag }));
     });
     return out;
   }
+  const OPEN = { em: '<em>', nw: '<span class="nw">' };
+  const CLOSE = { em: '</em>', nw: '</span>' };
   function html(list) {
-    let s = '', inEm = false;
+    let s = '', cur = '';
     for (const u of list) {
-      if (u.em !== inEm) { s += u.em ? '<em>' : '</em>'; inEm = u.em; }
+      if (u.tag !== cur) { s += (CLOSE[cur] || '') + (OPEN[u.tag] || ''); cur = u.tag; }
       s += esc(u.g);
     }
-    return inEm ? s + '</em>' : s;
+    return s + (CLOSE[cur] || '');
   }
   async function type(tw, { speed = 38, jitter = 30 } = {}) {
     const live = tw.querySelector('.tw__live');

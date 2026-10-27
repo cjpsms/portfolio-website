@@ -133,6 +133,7 @@ html.lenis, html.lenis body { height: auto; }
 .tw { display: inline-grid; }
 .tw > * { grid-area: 1 / 1; }
 .tw__ghost { visibility: hidden; }
+.tw .nw { white-space: nowrap; }
 .tw em, .tw__live em { font-style: normal; color: var(--ink-3); }
 .tw__live::after {
   content: ""; display: inline-block; width: 3px; height: .95em; margin-left: 3px; vertical-align: -0.1em;
