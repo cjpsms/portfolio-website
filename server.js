@@ -114,7 +114,7 @@ function serveStatic(req, res, pathname) {
     res.writeHead(200, {
       'Content-Type': type,
       'Content-Length': st.size,
-      'Cache-Control': type.startsWith('text/html') ? 'no-cache' : 'public, max-age=3600',
+      'Cache-Control': 'no-cache',
       'X-Content-Type-Options': 'nosniff',
     });
     if (req.method === 'HEAD') return res.end();

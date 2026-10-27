@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
 
@@ -22,6 +22,7 @@
       cjpsms
     </a>
     <ul class="topbar__links" id="navLinks">
+      <li><a href="#story">เริ่มต้น</a></li>
       <li><a href="#work">ผลงาน</a></li>
       <li><a href="#tools">เครื่องมือ</a></li>
       <li><a href="#server">เซิร์ฟเวอร์</a></li>
@@ -83,6 +84,64 @@
       <div class="stat"><span class="stat__num" id="statLangs">6</span><span class="stat__label">ภาษาที่ใช้</span></div>
       <div class="stat"><span class="stat__num">24/7</span><span class="stat__label">เซิร์ฟเวอร์ที่บ้านเปิดตลอด</span></div>
       <div class="stat"><span class="stat__num">Arch</span><span class="stat__label">linux btw</span></div>
+    </div>
+  </section>
+
+  <!-- ---------- origin story ---------- -->
+  <section class="section" id="story">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="reveal">เริ่มชอบมาจากไหน</h2>
+        <p class="section-head__aside reveal">จากความฝันตอนเด็ก มาเป็นชุด Arduino กล่องแรก แล้วไปจบที่ Linux</p>
+      </div>
+
+      <ol class="story">
+        <li class="story__item reveal">
+          <span class="story__when">ตอนเด็ก</span>
+          <div class="story__text">
+            <h3>บริษัทในฝันชื่อ PerSecond</h3>
+            <p>อยากมีบริษัทที่สร้างเครื่องพาเข้าโลกเสมือนแบบใน SAO ชื่อ <b>cjpsms</b> ก็มาจากตรงนั้น คือ ps จาก PerSecond บวก ms ให้ได้ชื่อ 6 ตัวที่ไม่ซ้ำใคร ช่วงนั้นลองเรียน Python ด้วย แต่ตอนนั้นยังยากเกินไป</p>
+          </div>
+        </li>
+        <li class="story__item reveal">
+          <span class="story__when">ม.1 เทอม 1</span>
+          <div class="story__text">
+            <h3>Arduino ครั้งแรก</h3>
+            <p>อบรม Arduino ที่โรงเรียน ใช้ PictoBlox ที่เขียนโปรแกรมด้วยการต่อบล็อก เป็นครั้งแรกที่โค้ดสั่งของจริงให้ขยับได้</p>
+          </div>
+        </li>
+        <li class="story__item reveal">
+          <span class="story__when">ม.1</span>
+          <div class="story__text">
+            <h3>ชุด Arduino กล่องแรก</h3>
+            <p>แม่ซื้อชุด Arduino ให้ เลยเลิกต่อบล็อกแล้วหัดเขียน C++ เองจากคลิป จนตอนนี้ C++ กลายเป็นภาษาที่ถนัดที่สุด</p>
+          </div>
+        </li>
+        <li class="story__item reveal">
+          <span class="story__when">ปิดเทอม ม.2</span>
+          <div class="story__text">
+            <h3>ค่าย สอวน คอมพิวเตอร์ ค่ายแรก</h3>
+            <p>ได้เจอ Linux (Ubuntu) ครั้งแรกที่ค่าย แล้วเริ่มปรับแต่งเครื่องตัวเอง</p>
+          </div>
+        </li>
+        <li class="story__item reveal">
+          <span class="story__when">หลังค่าย</span>
+          <div class="story__text">
+            <h3>Linux ลึกกว่าที่คิด</h3>
+            <p>ลง Ubuntu ให้เพื่อน เพื่อนบอกว่า Arch เล่นเกมลื่นกว่า เลยลองลงเอง ลองไปเรื่อย ๆ หลายตัว ทั้ง Fedora, Manjaro, Bazzite แล้วสุดท้ายก็กลับมาอยู่กับ Arch เพราะสะดวกและปรับแต่งได้ทุกอย่าง</p>
+            <div class="distros" aria-label="ลำดับ distro ที่เคยใช้">
+              <span>Ubuntu</span><span>Arch</span><span>Fedora</span><span>Arch + Hyprland</span><span>Manjaro</span><span>Arch</span><span>Bazzite</span><span>Ubuntu</span><span class="is-now">Arch</span>
+            </div>
+          </div>
+        </li>
+        <li class="story__item story__item--now reveal">
+          <span class="story__when">ตอนนี้ · ม.3</span>
+          <div class="story__text">
+            <h3>ค่าย สอวน รอบ 2</h3>
+            <p>ผ่านค่ายมาแล้ว 2 รอบ ระหว่างนั้นก็ทำโปรเจกต์ของตัวเองขึ้น GitHub ไปเรื่อย ๆ ตามที่เห็นข้างล่าง</p>
+          </div>
+        </li>
+      </ol>
     </div>
   </section>
 
@@ -239,7 +298,6 @@
         <div class="cedt__intro reveal">
           <p class="feature__eyebrow">วิศวกรรมคอมพิวเตอร์และเทคโนโลยีดิจิทัล · จุฬาฯ</p>
           <h2>ทำไมถึงเลือก CEDT</h2>
-          <p>ผมเริ่มสนใจด้านนี้จากการต่อวงจร LED ตัวแรกแล้วมันไม่ติด ต้องนั่งไล่หาว่าขาไหนผิด จากตรงนั้นก็ค่อย ๆ ขยับมาเขียนโค้ดควบคุมเซนเซอร์ จนรู้ว่าสิ่งที่ชอบจริง ๆ คือจุดที่ฮาร์ดแวร์กับซอฟต์แวร์มาเจอกัน</p>
           <p>CEDT ออกแบบมาให้เรียนแบบลงมือทำจริงตั้งแต่ปีแรก มีฝึกงานทุกปีและทำงานร่วมกับบริษัทเทคโนโลยีตลอดหลักสูตร ตรงกับสิ่งที่ผมอยากได้ คือได้ทดลองของจริง ไม่ใช่แค่ทฤษฎีในห้องเรียน</p>
           <p>เป้าหมายคือเป็นวิศวกรที่ทำงานได้ตั้งแต่ระดับวงจรไปจนถึงซอฟต์แวร์ที่คุยกับอุปกรณ์เหล่านั้น โดยเฉพาะสาย IoT และระบบฝังตัว</p>
           <ul class="facts">
@@ -295,7 +353,7 @@
   </div>
 </footer>
 
-<script src="js/stars.js"></script>
-<script src="js/main.js"></script>
+<script src="js/stars.js?v=2"></script>
+<script src="js/main.js?v=2"></script>
 </body>
 </html>
