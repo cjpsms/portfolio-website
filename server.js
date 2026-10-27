@@ -28,13 +28,12 @@ const MIME = {
 
 let cache = { at: 0, payload: null };
 
-function fetchGitHubRepos() {
-  const url = `https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=updated`;
+function ghGet(apiPath, accept) {
   return new Promise((resolve, reject) => {
-    const req = https.get(url, {
+    const req = https.get(`https://api.github.com${apiPath}`, {
       headers: {
         'User-Agent': `${GH_USER}-portfolio`,
-        'Accept': 'application/vnd.github+json',
+        'Accept': accept,
         ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}),
       },
       timeout: 8000,
@@ -43,13 +42,40 @@ function fetchGitHubRepos() {
       res.setEncoding('utf8');
       res.on('data', (c) => { body += c; });
       res.on('end', () => {
-        if (res.statusCode !== 200) return reject(new Error(`GitHub ${res.statusCode}`));
-        try { resolve(JSON.parse(body)); } catch (e) { reject(e); }
+        if (res.statusCode !== 200) return reject(Object.assign(new Error(`GitHub ${res.statusCode}`), { status: res.statusCode }));
+        resolve(body);
       });
     });
     req.on('timeout', () => req.destroy(new Error('GitHub timeout')));
     req.on('error', reject);
   });
+}
+
+async function fetchGitHubRepos() {
+  return JSON.parse(await ghGet(`/users/${GH_USER}/repos?per_page=100&sort=updated`, 'application/vnd.github+json'));
+}
+
+// README markdown per repo, only for repos we list, cached for a few hours.
+const README_MS = 6 * 60 * 60 * 1000;
+const readmeCache = new Map();
+async function getReadme(name) {
+  const repos = (await getRepos()).repos;
+  const repo = repos.find((r) => r.name.toLowerCase() === name.toLowerCase());
+  if (!repo) return null;
+  const hit = readmeCache.get(repo.name);
+  if (hit && Date.now() - hit.at < README_MS) return hit.body;
+  let body = '';
+  try {
+    body = await ghGet(`/repos/${GH_USER}/${encodeURIComponent(repo.name)}/readme`, 'application/vnd.github.raw');
+  } catch (err) {
+    if (err.status !== 404) {
+      console.error('[readme]', repo.name, err.message);
+      if (hit) return hit.body;
+      throw err;
+    }
+  }
+  readmeCache.set(repo.name, { at: Date.now(), body });
+  return body;
 }
 
 // Curated entries keep their Thai text/tags; GitHub adds language, dates.
@@ -128,6 +154,16 @@ const server = http.createServer(async (req, res) => {
   if (pathname === '/api/repos') {
     const data = await getRepos();
     return send(res, 200, JSON.stringify(data), MIME['.json']);
+  }
+  const m = pathname.match(/^\/api\/readme\/([A-Za-z0-9._-]{1,100})$/);
+  if (m) {
+    try {
+      const md = await getReadme(m[1]);
+      if (md === null) return send(res, 404, 'Unknown repo', 'text/plain; charset=utf-8');
+      return send(res, 200, md, 'text/markdown; charset=utf-8');
+    } catch {
+      return send(res, 502, 'GitHub unavailable', 'text/plain; charset=utf-8');
+    }
   }
   serveStatic(req, res, pathname);
 });

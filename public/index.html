@@ -9,9 +9,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400..600&family=Noto+Sans+Thai:wght@300..600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=6">
+<link rel="stylesheet" href="css/style.css?v=11">
 </head>
 <body>
+
+<div class="cursor" id="cursor" aria-hidden="true"></div>
 
 <header class="header" id="header">
   <nav class="header__inner">
@@ -22,7 +24,7 @@
     <ul class="nav" id="nav">
       <li><a href="#story">เริ่มต้น</a></li>
       <li><a href="#work">ผลงาน</a></li>
-      <li><a href="#tools">โปรเจกต์ทั้งหมด</a></li>
+      <li><a href="#projects">โปรเจกต์ทั้งหมด</a></li>
       <li><a href="#cedt">CEDT</a></li>
       <li><a href="#contact">ติดต่อ</a></li>
     </ul>
@@ -35,9 +37,10 @@
 
 <main id="top">
 
-  <!-- hero -->
-  <section class="hero">
-    <div class="container">
+  <!-- ===== hero ===== -->
+  <section class="hero" id="hero">
+    <canvas class="field" id="heroField" aria-hidden="true"></canvas>
+    <div class="container hero__inner" id="heroInner">
       <p class="hero__name fade-in">พงษ์นฤดล พูนจิรธนเรือง · cj</p>
       <h1 class="hero__title" aria-label="สร้างเครื่องมือเล็ก ๆ บน Linux แล้วเปิดโค้ดให้ทุกคนดู">
         <span class="tw" data-type="hero"><span class="tw__ghost" aria-hidden="true">สร้างเครื่องมือเล็ก ๆ บน Linux แล้วเปิดโค้ดให้ทุกคนดู</span><span class="tw__live" aria-hidden="true"></span></span>
@@ -45,28 +48,33 @@
       <div class="hero__after" id="heroAfter">
         <p class="hero__sub">นักเรียน ม.3 · ค่าย สอวน คอมพิวเตอร์ · ใช้ Arch Linux</p>
         <div class="actions">
-          <a class="btn btn--primary" href="#work">ดูผลงาน</a>
-          <a class="btn btn--secondary" href="https://github.com/cjpsms" target="_blank" rel="noopener">github.com/cjpsms</a>
+          <a class="btn btn--primary magnetic" href="#work">ดูผลงาน</a>
+          <a class="btn btn--secondary magnetic" href="#projects">โปรเจกต์ทั้งหมด</a>
         </div>
       </div>
     </div>
+    <div class="scroll-hint" id="scrollHint" aria-hidden="true"><span></span></div>
   </section>
 
-  <!-- showcase card -->
+  <!-- ===== showcase: dots morph into project names ===== -->
   <section class="showcase-wrap">
-    <div class="showcase reveal" id="showcase">
-      <canvas class="vortex" data-vortex="showcase" aria-hidden="true"></canvas>
-      <div class="showcase__content" aria-live="polite">
+    <div class="showcase" id="showcase">
+      <canvas class="field" id="morphField" aria-hidden="true"></canvas>
+      <div class="showcase__info" aria-live="polite">
         <p class="showcase__kicker" id="scKicker">ระบบตรวจโค้ด · JavaScript</p>
-        <p class="showcase__title" id="scTitle">Grader-kak</p>
+        <p class="showcase__name sr-only" id="scName">Grader-kak</p>
         <p class="showcase__desc" id="scDesc">ระบบตรวจโค้ดออนไลน์ที่ทำกับเพื่อนที่ค่าย สอวน</p>
+        <button class="btn btn--outline-light btn--sm magnetic" type="button" id="scOpen">ดูรายละเอียด</button>
       </div>
-      <div class="showcase__dots" id="scDots" role="tablist" aria-label="เลือกโปรเจกต์"></div>
+      <div class="showcase__nav">
+        <span class="showcase__count"><b id="scIndex">01</b> / <span id="scTotal">05</span></span>
+        <div class="showcase__dots" id="scDots" role="tablist" aria-label="เลือกโปรเจกต์"></div>
+      </div>
     </div>
   </section>
 
-  <!-- arc + statement -->
-  <section class="intro">
+  <!-- ===== icon arc + statement ===== -->
+  <section class="intro" id="intro">
     <div class="arc" id="arc" aria-label="ภาษาและเครื่องมือที่ใช้">
       <span class="arc__item" title="C++">C++</span>
       <span class="arc__item" title="Python">Py</span>
@@ -81,148 +89,181 @@
       <span class="arc__item" title="TypeScript">TS</span>
       <span class="arc__item" title="Bash">sh</span>
       <span class="arc__item" title="Kotlin">Kt</span>
+      <span class="arc__item" title="Lua">Lua</span>
+      <span class="arc__item" title="Neovim"><svg viewBox="0 0 24 24"><path d="M5 4l5 3v13l-5-3zM19 4l-5 3v13l5-3z"/><path d="M10 7l4 13"/></svg></span>
+      <span class="arc__item" title="ESP32"><svg viewBox="0 0 24 24"><path d="M5 12a7 7 0 0 1 14 0M8 12a4 4 0 0 1 8 0"/><circle cx="12" cy="13" r="1.4"/><path d="M12 15v5"/></svg></span>
     </div>
-    <div class="container container--narrow">
-      <p class="statement" aria-label="เริ่มจากชุด Arduino กล่องแรก ตอนนี้ทำทั้งเว็บ บอท เกม และเซิร์ฟเวอร์ของตัวเอง">
-        <span class="tw" data-type="scroll"><span class="tw__ghost" aria-hidden="true">เริ่มจากชุด Arduino กล่องแรก <em>ตอนนี้ทำทั้งเว็บ บอท เกม และเซิร์ฟเวอร์ของตัวเอง</em></span><span class="tw__live" aria-hidden="true"></span></span>
-      </p>
+    <div class="container">
+      <p class="statement" id="statement">เริ่มจากชุด Arduino กล่องแรก ตอนนี้ทำทั้งเว็บ บอท เกม และเซิร์ฟเวอร์ของตัวเอง ทุกอย่างเปิดโค้ดไว้บน GitHub</p>
     </div>
   </section>
 
-  <!-- origin story -->
-  <section class="section" id="story">
-    <div class="container container--narrow">
-      <div class="head reveal">
-        <h2 class="h4">เริ่มชอบมาจากไหน</h2>
-        <p class="body">จาก Python ที่ยังอ่านไม่ออก มาเป็นชุด Arduino กล่องแรก แล้วไปจบที่ Linux</p>
+  <!-- ===== origin story: horizontal scroll ===== -->
+  <section class="hs" id="story">
+    <div class="hs__pin">
+      <div class="container hs__head">
+        <div>
+          <h2 class="h3 split">เริ่มชอบมาจากไหน</h2>
+          <p class="body">จาก Python ที่ยังอ่านไม่ออก มาเป็นชุด Arduino กล่องแรก แล้วไปจบที่ Linux</p>
+        </div>
+        <div class="hs__progress" aria-hidden="true"><i id="storyBar"></i></div>
       </div>
-      <ol class="steps">
-        <li class="step reveal">
-          <span class="step__when">ตอนเด็ก</span>
-          <div><h3 class="h6">ลองเขียน Python ครั้งแรก</h3><p class="body">เคยลองเรียน Python ตั้งแต่ยังเด็ก แต่ตอนนั้นยังยากเกินไป เลยพักไว้ก่อน</p></div>
-        </li>
-        <li class="step reveal">
-          <span class="step__when">ม.1 เทอม 1</span>
-          <div><h3 class="h6">Arduino ครั้งแรก</h3><p class="body">อบรม Arduino ที่โรงเรียนด้วย PictoBlox ที่เขียนโปรแกรมด้วยการต่อบล็อก ครั้งแรกที่โค้ดสั่งของจริงให้ขยับได้</p></div>
-        </li>
-        <li class="step reveal">
-          <span class="step__when">ม.1</span>
-          <div><h3 class="h6">ชุด Arduino กล่องแรก</h3><p class="body">แม่ซื้อชุด Arduino ให้ เลยเลิกต่อบล็อกแล้วหัดเขียน C++ เองจากคลิป จนตอนนี้ C++ เป็นภาษาที่ถนัดที่สุด</p></div>
-        </li>
-        <li class="step reveal">
-          <span class="step__when">ปิดเทอม ม.2</span>
-          <div><h3 class="h6">ค่าย สอวน คอมพิวเตอร์ ค่ายแรก</h3><p class="body">ได้เจอ Linux (Ubuntu) ครั้งแรกที่ค่าย แล้วเริ่มปรับแต่งเครื่องตัวเอง</p></div>
-        </li>
-        <li class="step reveal">
-          <span class="step__when">หลังค่าย</span>
-          <div>
-            <h3 class="h6">Linux ลึกกว่าที่คิด</h3>
+      <div class="hs__viewport">
+        <ol class="hs__track" id="storyTrack">
+          <li class="story-card">
+            <span class="story-card__no">01</span>
+            <span class="story-card__when">ตอนเด็ก</span>
+            <h3 class="h5">ลองเขียน Python ครั้งแรก</h3>
+            <p class="body">เคยลองเรียน Python ตั้งแต่ยังเด็ก แต่ตอนนั้นยังยากเกินไป เลยพักไว้ก่อน</p>
+          </li>
+          <li class="story-card">
+            <span class="story-card__no">02</span>
+            <span class="story-card__when">ม.1 เทอม 1</span>
+            <h3 class="h5">Arduino ครั้งแรก</h3>
+            <p class="body">อบรม Arduino ที่โรงเรียนด้วย PictoBlox ที่เขียนโปรแกรมด้วยการต่อบล็อก ครั้งแรกที่โค้ดสั่งของจริงให้ขยับได้</p>
+          </li>
+          <li class="story-card">
+            <span class="story-card__no">03</span>
+            <span class="story-card__when">ม.1</span>
+            <h3 class="h5">ชุด Arduino กล่องแรก</h3>
+            <p class="body">แม่ซื้อชุด Arduino ให้ เลยเลิกต่อบล็อกแล้วหัดเขียน C++ เองจากคลิป จนตอนนี้ C++ เป็นภาษาที่ถนัดที่สุด</p>
+          </li>
+          <li class="story-card">
+            <span class="story-card__no">04</span>
+            <span class="story-card__when">ปิดเทอม ม.2</span>
+            <h3 class="h5">ค่าย สอวน คอมพิวเตอร์ ค่ายแรก</h3>
+            <p class="body">ได้เจอ Linux (Ubuntu) ครั้งแรกที่ค่าย แล้วเริ่มปรับแต่งเครื่องตัวเอง</p>
+          </li>
+          <li class="story-card story-card--wide">
+            <span class="story-card__no">05</span>
+            <span class="story-card__when">หลังค่าย</span>
+            <h3 class="h5">Linux ลึกกว่าที่คิด</h3>
             <p class="body">ลง Ubuntu ให้เพื่อน เพื่อนบอกว่า Arch เล่นเกมลื่นกว่า เลยลองลงเอง ลองไปหลายตัวจนกลับมาอยู่กับ Arch เพราะสะดวกและปรับแต่งได้ทุกอย่าง</p>
             <div class="distros"><span>Ubuntu</span><span>Arch</span><span>Fedora</span><span>Arch + Hyprland</span><span>Manjaro</span><span>Arch</span><span>Bazzite</span><span>Ubuntu</span><span class="is-now">Arch</span></div>
-          </div>
-        </li>
-        <li class="step step--now reveal">
-          <span class="step__when">ตอนนี้ · ม.3</span>
-          <div><h3 class="h6">ค่าย สอวน รอบ 2</h3><p class="body">ผ่านค่ายมาแล้ว 2 รอบ ระหว่างนั้นก็ทำโปรเจกต์ของตัวเองขึ้น GitHub ไปเรื่อย ๆ</p></div>
-        </li>
-      </ol>
+          </li>
+          <li class="story-card story-card--now">
+            <span class="story-card__no">06</span>
+            <span class="story-card__when">ตอนนี้ · ม.3</span>
+            <h3 class="h5">ค่าย สอวน รอบ 2</h3>
+            <p class="body">ผ่านค่ายมาแล้ว 2 รอบ ระหว่างนั้นก็ทำโปรเจกต์ของตัวเองขึ้น GitHub ไปเรื่อย ๆ</p>
+          </li>
+        </ol>
+      </div>
     </div>
   </section>
 
-  <!-- featured work -->
-  <section class="section section--work" id="work">
+  <!-- ===== featured work: pinned text left, visuals scroll right ===== -->
+  <section class="explorer" id="work">
     <div class="container">
-      <div class="head head--center reveal">
-        <h2 class="h4 h4--two">ผลงานหลัก<br><span>ที่มีคนใช้งานจริง</span></h2>
+      <div class="explorer__intro">
+        <h2 class="h3 split">ผลงานหลัก</h2>
+        <p class="body">สามโปรเจกต์ที่ใช้เวลาทำนานที่สุด และมีคนใช้งานจริง</p>
       </div>
+      <div class="explorer__grid">
+        <aside class="explorer__side">
+          <div class="explorer__sticky" id="exSticky">
+            <div class="explorer__count"><b id="exIndex">01</b><span>/ 03</span></div>
+            <div class="explorer__texts" id="exTexts"></div>
+            <div class="explorer__bars" id="exBars"><i></i><i></i><i></i></div>
+          </div>
+        </aside>
 
-      <article class="feature">
-        <div class="feature__head reveal">
-          <h3 class="h4"><a href="https://github.com/cjpsms/Grader-kak" target="_blank" rel="noopener">Grader-kak</a></h3>
-          <p class="body">ระบบตรวจโค้ดออนไลน์ที่ทำกับเพื่อนที่ค่าย สอวน นักเรียนส่ง C++ หรือ Python แล้วตรวจกับเทสต์ลับ ครูแก้โจทย์และเทสต์ได้บนเว็บ โค้ดทุกชิ้นรันในกล่องแยก ไม่มีเน็ต และถูกตัดเมื่อเกินเวลา</p>
-        </div>
-        <div class="glow reveal">
-          <div class="ui ui--grader">
-            <div class="ui__bar"><span class="ui__title">ผลการตรวจ</span><span class="ui__pill">C++17</span></div>
-            <div class="rows">
-              <div class="row"><span class="row__name">A1 · ผลรวมเลขคู่</span><span class="row__meter"><i style="--w:100%"></i></span><span class="badge badge--ok">ผ่าน 10/10</span></div>
-              <div class="row"><span class="row__name">A2 · หาทางในเขาวงกต</span><span class="row__meter"><i style="--w:70%"></i></span><span class="badge badge--warn">เกินเวลา 7/10</span></div>
-              <div class="row"><span class="row__name">B1 · จัดตารางสอบ</span><span class="row__meter"><i style="--w:40%"></i></span><span class="badge badge--bad">คำตอบผิด 4/10</span></div>
-              <div class="row"><span class="row__name">B2 · สะพานข้ามแม่น้ำ</span><span class="row__meter"><i style="--w:100%"></i></span><span class="badge badge--ok">ผ่าน 10/10</span></div>
+        <div class="explorer__list">
+          <article class="ex-item" data-i="0">
+            <div class="ex-item__text">
+              <p class="small">ระบบตรวจโค้ด · JavaScript</p>
+              <h3 class="h4">Grader-kak</h3>
+              <p class="body">ระบบตรวจโค้ดออนไลน์ที่ทำกับเพื่อนที่ค่าย สอวน นักเรียนส่ง C++ หรือ Python แล้วตรวจกับเทสต์ลับ ครูแก้โจทย์และเทสต์ได้บนเว็บ โค้ดทุกชิ้นรันในกล่องแยก ไม่มีเน็ต และถูกตัดเมื่อเกินเวลา</p>
+              <div class="links"><a class="btn btn--secondary btn--sm" href="https://github.com/cjpsms/Grader-kak" target="_blank" rel="noopener">ดูโค้ด</a></div>
             </div>
-          </div>
-        </div>
-      </article>
+            <div class="glow">
+              <div class="ui ui--grader">
+                <div class="ui__bar"><span class="ui__title">ผลการตรวจ</span><span class="ui__pill">C++17</span></div>
+                <div class="rows">
+                  <div class="row"><span class="row__name">A1 · ผลรวมเลขคู่</span><span class="row__meter"><i style="--w:100%"></i></span><span class="badge badge--ok">ผ่าน 10/10</span></div>
+                  <div class="row"><span class="row__name">A2 · หาทางในเขาวงกต</span><span class="row__meter"><i style="--w:70%"></i></span><span class="badge badge--warn">เกินเวลา 7/10</span></div>
+                  <div class="row"><span class="row__name">B1 · จัดตารางสอบ</span><span class="row__meter"><i style="--w:40%"></i></span><span class="badge badge--bad">คำตอบผิด 4/10</span></div>
+                  <div class="row"><span class="row__name">B2 · สะพานข้ามแม่น้ำ</span><span class="row__meter"><i style="--w:100%"></i></span><span class="badge badge--ok">ผ่าน 10/10</span></div>
+                </div>
+              </div>
+            </div>
+          </article>
 
-      <article class="feature">
-        <div class="feature__head reveal">
-          <h3 class="h4"><a href="https://cjpsms.github.io/lamshell/" target="_blank" rel="noopener">ล่ามเชลล์</a></h3>
-          <p class="body">เกมสอนใช้ Linux ให้นักเรียน ม.ปลาย 44 ด่าน ช่วงแรกพิมพ์ไทยมั่ว ๆ ได้ AI จะแปลเป็นคำสั่งให้ แล้วค่อย ๆ เข้มขึ้นจนต้องพิมพ์คำสั่งจริงเอง มีหน้าครูดูความคืบหน้าทั้งห้องแบบสด</p>
-          <div class="links"><a class="btn btn--secondary btn--sm" href="https://cjpsms.github.io/lamshell/" target="_blank" rel="noopener">ลองเล่น</a><a class="btn btn--ghost btn--sm" href="https://github.com/cjpsms/lamshell" target="_blank" rel="noopener">ดูโค้ด</a></div>
-        </div>
-        <div class="glow glow--violet reveal">
-          <div class="ui ui--game">
-            <div class="ui__bar"><span class="ui__title">ด่าน 3 · หาไฟล์ที่หายไป</span><span class="stars-row" aria-label="3 ดาว"><i></i><i></i><i></i></span></div>
-            <div class="npc"><span class="npc__avatar">ป</span><p><b>ป้าเซิร์ฟ</b>ลองดูซิว่าในห้องนี้มีไฟล์อะไรบ้าง</p></div>
-            <div class="say"><span class="say__text">ขอดูไฟล์หน่อย</span><span class="say__arrow">แปลเป็น</span><code>ls</code></div>
-            <div class="files"><span>การบ้าน.txt</span><span>รูปแมว.png</span><span class="is-dir">ลับสุดยอด/</span></div>
-            <div class="progress"><span>ช่วงที่ 1 · พิมพ์ไทยได้</span><span class="progress__bar"><i></i></span><span>ด่าน 3 / 44</span></div>
-          </div>
-        </div>
-      </article>
+          <article class="ex-item" data-i="1">
+            <div class="ex-item__text">
+              <p class="small">เกม · เล่นได้บนเว็บ</p>
+              <h3 class="h4">ล่ามเชลล์</h3>
+              <p class="body">เกมสอนใช้ Linux ให้นักเรียน ม.ปลาย 44 ด่าน ช่วงแรกพิมพ์ไทยมั่ว ๆ ได้ AI จะแปลเป็นคำสั่งให้ แล้วค่อย ๆ เข้มขึ้นจนต้องพิมพ์คำสั่งจริงเอง มีหน้าครูดูความคืบหน้าทั้งห้องแบบสด</p>
+              <div class="links"><a class="btn btn--primary btn--sm" href="https://cjpsms.github.io/lamshell/" target="_blank" rel="noopener">ลองเล่น</a><a class="btn btn--secondary btn--sm" href="https://github.com/cjpsms/lamshell" target="_blank" rel="noopener">ดูโค้ด</a></div>
+            </div>
+            <div class="glow glow--violet">
+              <div class="ui ui--game">
+                <div class="ui__bar"><span class="ui__title">ด่าน 3 · หาไฟล์ที่หายไป</span><span class="stars-row" aria-label="3 ดาว"><i></i><i></i><i></i></span></div>
+                <div class="npc"><span class="npc__avatar">ป</span><p><b>ป้าเซิร์ฟ</b>ลองดูซิว่าในห้องนี้มีไฟล์อะไรบ้าง</p></div>
+                <div class="say"><span class="say__text">ขอดูไฟล์หน่อย</span><span class="say__arrow">แปลเป็น</span><code>ls</code></div>
+                <div class="files"><span>การบ้าน.txt</span><span>รูปแมว.png</span><span class="is-dir">ลับสุดยอด/</span></div>
+                <div class="progress"><span>ช่วงที่ 1 · พิมพ์ไทยได้</span><span class="progress__bar"><i></i></span><span>ด่าน 3 / 44</span></div>
+              </div>
+            </div>
+          </article>
 
-      <article class="feature">
-        <div class="feature__head reveal">
-          <h3 class="h4"><a href="https://github.com/cjpsms/openbox" target="_blank" rel="noopener">openbox</a></h3>
-          <p class="body">ตู้ล็อกเกอร์รับพัสดุ ลูกค้าส่งภาพคำสั่งซื้อให้บอท Telegram แล้ว AI อ่านรายละเอียดให้ เลือกขนาดช่อง จ่ายเงินแล้วตรวจสลิปอัตโนมัติ ไรเดอร์เอาพัสดุมาส่อง กล้องอ่านฉลากแล้วเปิดช่องที่จองไว้</p>
-        </div>
-        <div class="glow glow--green reveal">
-          <div class="ui ui--chat">
-            <div class="chat__head"><span class="chat__avatar">ob</span><div><b>OPENxBOX</b><small>บอท</small></div></div>
-            <div class="bubble bubble--me"><span class="bubble__img">ภาพคำสั่งซื้อ.jpg</span></div>
-            <div class="bubble">อ่านคำสั่งซื้อแล้ว<br><b>หูฟังไร้สาย × 1</b> · ฿890<br>ถูกต้องไหม</div>
-            <div class="choices"><span>ถูกต้อง</span><span>แก้ไข</span></div>
-            <div class="bubble">เลือกขนาดช่อง</div>
-            <div class="choices"><span>S</span><span class="is-on">M</span><span>L</span></div>
-            <div class="bubble bubble--ok">ตรวจสลิปผ่าน · จองช่อง M-04 แล้ว</div>
-          </div>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- all projects rail -->
-  <section class="section section--rail" id="tools">
-    <div class="container">
-      <div class="rail-head reveal">
-        <h2 class="h4">โปรเจกต์ทั้งหมดบน GitHub</h2>
-        <div class="rail-head__end">
-          <span class="caption" id="repoSource">กำลังโหลด</span>
-          <a class="btn btn--secondary btn--sm" href="https://github.com/cjpsms?tab=repositories" target="_blank" rel="noopener">เปิดใน GitHub</a>
+          <article class="ex-item" data-i="2">
+            <div class="ex-item__text">
+              <p class="small">ฮาร์ดแวร์ + AI · Python</p>
+              <h3 class="h4">openbox</h3>
+              <p class="body">ตู้ล็อกเกอร์รับพัสดุ ลูกค้าส่งภาพคำสั่งซื้อให้บอท Telegram แล้ว AI อ่านรายละเอียดให้ เลือกขนาดช่อง จ่ายเงินแล้วตรวจสลิปอัตโนมัติ ไรเดอร์เอาพัสดุมาส่อง กล้องอ่านฉลากแล้วเปิดช่องที่จองไว้</p>
+              <div class="links"><a class="btn btn--secondary btn--sm" href="https://github.com/cjpsms/openbox" target="_blank" rel="noopener">ดูโค้ด</a></div>
+            </div>
+            <div class="glow glow--green">
+              <div class="ui ui--chat">
+                <div class="chat__head"><span class="chat__avatar">ob</span><div><b>OPENxBOX</b><small>บอท</small></div></div>
+                <div class="bubble bubble--me"><span class="bubble__img">ภาพคำสั่งซื้อ.jpg</span></div>
+                <div class="bubble">อ่านคำสั่งซื้อแล้ว<br><b>หูฟังไร้สาย × 1</b> · ฿890<br>ถูกต้องไหม</div>
+                <div class="choices"><span>ถูกต้อง</span><span>แก้ไข</span></div>
+                <div class="bubble">เลือกขนาดช่อง</div>
+                <div class="choices"><span>S</span><span class="is-on">M</span><span>L</span></div>
+                <div class="bubble bubble--ok">ตรวจสลิปผ่าน · จองช่อง M-04 แล้ว</div>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
-      <div class="filters reveal" id="filters" role="tablist" aria-label="กรองตามหมวด"></div>
-    </div>
-    <div class="rail" id="rail" tabindex="0" aria-label="รายการโปรเจกต์"></div>
-    <div class="container rail-nav">
-      <button class="round" id="railPrev" aria-label="เลื่อนซ้าย"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
-      <button class="round" id="railNext" aria-label="เลื่อนขวา"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     </div>
   </section>
 
-  <!-- home server + daily setup -->
-  <section class="section section--server">
+  <!-- ===== all GitHub projects: horizontal gallery, click to open ===== -->
+  <section class="gallery" id="projects">
+    <div class="gallery__pin">
+      <div class="container gallery__head">
+        <div>
+          <h2 class="h3 split">โปรเจกต์ทั้งหมดบน GitHub</h2>
+          <p class="body"><span id="repoSource">กำลังโหลด</span> · กดการ์ดเพื่อดูรายละเอียด</p>
+        </div>
+        <div class="filters" id="filters" role="tablist" aria-label="กรองตามหมวด"></div>
+      </div>
+      <div class="gallery__viewport" id="galleryViewport">
+        <div class="gallery__track" id="galleryTrack"></div>
+      </div>
+      <div class="container gallery__foot">
+        <div class="hs__progress" aria-hidden="true"><i id="galleryBar"></i></div>
+        <a class="btn btn--secondary btn--sm" href="https://github.com/cjpsms?tab=repositories" target="_blank" rel="noopener">เปิดใน GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== home server + daily setup ===== -->
+  <section class="section section--duo">
     <div class="container">
       <div class="duo">
-        <div class="duo__item reveal">
+        <div class="duo__item">
           <p class="small">ไม่ได้อยู่บน GitHub</p>
-          <h2 class="h4 h4--two">เซิร์ฟเวอร์ที่บ้าน<br><span>Ubuntu หนึ่งเครื่องที่ดูแลเอง</span></h2>
+          <h2 class="h4 h4--two">เซิร์ฟเวอร์ที่บ้าน<br><span class="dim">Ubuntu หนึ่งเครื่องที่ดูแลเอง</span></h2>
           <p class="body">โฮสต์ Open WebUI ที่ปรับแต่งเอง ระบบ Grader และเว็บอื่น ๆ เปิดออกอินเทอร์เน็ตผ่าน Cloudflare Tunnel สำรองข้อมูลและรีบูตเองทุกสัปดาห์</p>
           <div class="tags"><span>Open WebUI + Ollama</span><span>systemd</span><span>Cloudflare Tunnel</span><span>บอท Telegram</span></div>
         </div>
-        <div class="duo__item reveal">
+        <div class="duo__item">
           <p class="small">ใช้ทุกวัน</p>
-          <h2 class="h4 h4--two">Arch Linux + Hyprland<br><span>ปรับแต่งเครื่องตัวเอง</span></h2>
+          <h2 class="h4 h4--two">Arch Linux + Hyprland<br><span class="dim">ปรับแต่งเครื่องตัวเอง</span></h2>
           <p class="body">ทั้งแถบด้านข้างเล่นเพลง คีย์ลัดเรียกคำสั่ง หน้าล็อกอินที่ต้องพิมพ์ให้เร็วก่อนเข้า และเครื่องมือเล็ก ๆ ที่เขียนไว้ใช้เอง</p>
           <div class="tags"><span>Hyprland</span><span>Quickshell</span><span>Neovim</span><span>kanata</span></div>
         </div>
@@ -230,35 +271,36 @@
     </div>
   </section>
 
-  <!-- CEDT -->
+  <!-- ===== CEDT ===== -->
   <section class="section section--cedt" id="cedt">
     <div class="container">
-      <div class="head head--center reveal">
-        <p class="small">เป้าหมายต่อไป</p>
-        <h2 class="h4 h4--two">CEDT จุฬาฯ<br><span>ได้ทำงานจริงตั้งแต่ปีแรก</span></h2>
-        <p class="body body--center">วิศวกรรมคอมพิวเตอร์และเทคโนโลยีดิจิทัล เรียนแบบลงมือทำจริงตั้งแต่ปีแรก ฝึกงานทุกปี และทำงานร่วมกับบริษัทเทคโนโลยีตลอดหลักสูตร ตรงกับสิ่งที่อยากได้ คือได้ทดลองของจริง ไม่ใช่แค่ทฤษฎี เป้าหมายคือเป็นวิศวกรที่ทำงานได้ตั้งแต่ระดับวงจรไปจนถึงซอฟต์แวร์ที่คุยกับอุปกรณ์เหล่านั้น</p>
+      <div class="cedt__head">
+        <div>
+          <p class="small">เป้าหมายต่อไป</p>
+          <h2 class="h3 h4--two split">CEDT จุฬาฯ<br><span class="dim">ได้ทำงานจริงตั้งแต่ปีแรก</span></h2>
+        </div>
+        <p class="body">วิศวกรรมคอมพิวเตอร์และเทคโนโลยีดิจิทัล เรียนแบบลงมือทำจริงตั้งแต่ปีแรก ฝึกงานทุกปี และทำงานร่วมกับบริษัทเทคโนโลยีตลอดหลักสูตร ตรงกับสิ่งที่อยากได้ คือได้ทดลองของจริง ไม่ใช่แค่ทฤษฎี เป้าหมายคือเป็นวิศวกรที่ทำงานได้ตั้งแต่ระดับวงจรไปจนถึงซอฟต์แวร์ที่คุยกับอุปกรณ์เหล่านั้น</p>
       </div>
-      <div class="years">
-        <div class="year reveal"><span class="small">ปี 1</span><h3 class="h6">ปูพื้นฐาน</h3><p class="body">คณิตศาสตร์ การเขียนโปรแกรม และ Friday Activities เพื่อเห็นงานจริงจากบริษัทตั้งแต่เทอมแรก</p></div>
-        <div class="year reveal"><span class="small">ปี 2</span><h3 class="h6">ฮาร์ดแวร์ + ซอฟต์แวร์</h3><p class="body">ลงลึกระบบฝังตัวและโครงสร้างข้อมูล เริ่มโปรเจกต์กลุ่มที่ใช้ทั้งสองด้าน</p></div>
-        <div class="year reveal"><span class="small">ปี 3</span><h3 class="h6">ฝึกงาน</h3><p class="body">ฝึกงานกับบริษัทเทคโนโลยีจริง เอาปัญหาจากหน้างานกลับมาต่อยอดเป็นโปรเจกต์</p></div>
-        <div class="year reveal"><span class="small">ปี 4</span><h3 class="h6">โปรเจกต์จบ</h3><p class="body">ทำร่วมกับภาคอุตสาหกรรม เลือกหัวข้อสาย IoT ที่ต่อยอดจากผลงานที่สะสมมา</p></div>
+      <div class="years" id="years">
+        <div class="years__line" aria-hidden="true"><i id="yearsLine"></i></div>
+        <div class="year"><span class="year__dot" aria-hidden="true"></span><span class="small">ปี 1</span><h3 class="h6">ปูพื้นฐาน</h3><p class="body">คณิตศาสตร์ การเขียนโปรแกรม และ Friday Activities เพื่อเห็นงานจริงจากบริษัทตั้งแต่เทอมแรก</p></div>
+        <div class="year"><span class="year__dot" aria-hidden="true"></span><span class="small">ปี 2</span><h3 class="h6">ฮาร์ดแวร์ + ซอฟต์แวร์</h3><p class="body">ลงลึกระบบฝังตัวและโครงสร้างข้อมูล เริ่มโปรเจกต์กลุ่มที่ใช้ทั้งสองด้าน</p></div>
+        <div class="year"><span class="year__dot" aria-hidden="true"></span><span class="small">ปี 3</span><h3 class="h6">ฝึกงาน</h3><p class="body">ฝึกงานกับบริษัทเทคโนโลยีจริง เอาปัญหาจากหน้างานกลับมาต่อยอดเป็นโปรเจกต์</p></div>
+        <div class="year"><span class="year__dot" aria-hidden="true"></span><span class="small">ปี 4</span><h3 class="h6">โปรเจกต์จบ</h3><p class="body">ทำร่วมกับภาคอุตสาหกรรม เลือกหัวข้อสาย IoT ที่ต่อยอดจากผลงานที่สะสมมา</p></div>
       </div>
     </div>
   </section>
 
-  <!-- contact (dark) -->
+  <!-- ===== contact ===== -->
   <section class="cta-wrap" id="contact">
-    <div class="cta reveal">
-      <canvas class="vortex" data-vortex="cta" aria-hidden="true"></canvas>
+    <div class="cta" id="cta">
+      <canvas class="field" id="ctaField" aria-hidden="true"></canvas>
       <div class="cta__content">
-        <h2 class="cta__title" aria-label="คุยกันได้">
-          <span class="tw" data-type="scroll"><span class="tw__ghost" aria-hidden="true">คุยกันได้</span><span class="tw__live" aria-hidden="true"></span></span>
-        </h2>
+        <h2 class="cta__title split">คุยกันได้</h2>
         <p class="cta__sub">สนใจโปรเจกต์ไหน หรืออยากชวนทำอะไรด้วยกัน ส่งมาได้เลย</p>
         <div class="actions">
-          <a class="btn btn--inverse" href="mailto:cj.psms@gmail.com">cj.psms@gmail.com</a>
-          <a class="btn btn--outline-light" href="https://github.com/cjpsms" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn btn--inverse magnetic" href="mailto:cj.psms@gmail.com" data-morph="@">cj.psms@gmail.com</a>
+          <a class="btn btn--outline-light magnetic" href="https://github.com/cjpsms" target="_blank" rel="noopener" data-morph="GitHub">GitHub</a>
         </div>
       </div>
     </div>
@@ -271,7 +313,7 @@
     <div class="footer__cols">
       <div>
         <p class="caption">หน้านี้</p>
-        <ul><li><a href="#story">เริ่มต้น</a></li><li><a href="#work">ผลงาน</a></li><li><a href="#tools">โปรเจกต์ทั้งหมด</a></li><li><a href="#cedt">CEDT</a></li></ul>
+        <ul><li><a href="#story">เริ่มต้น</a></li><li><a href="#work">ผลงาน</a></li><li><a href="#projects">โปรเจกต์ทั้งหมด</a></li><li><a href="#cedt">CEDT</a></li></ul>
       </div>
       <div>
         <p class="caption">ติดต่อ</p>
@@ -285,7 +327,28 @@
   </div>
 </footer>
 
-<script src="js/vortex.js?v=6"></script>
-<script src="js/main.js?v=6"></script>
+<!-- project detail panel -->
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+  <div class="sheet__backdrop" data-close></div>
+  <div class="sheet__panel" id="sheetPanel">
+    <button class="sheet__close" data-close aria-label="ปิด"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="sheet__cover" id="sheetCover"><span id="sheetCoverName"></span></div>
+    <div class="sheet__body" data-lenis-prevent>
+      <div class="sheet__meta" id="sheetMeta"></div>
+      <h2 class="h3" id="sheetTitle"></h2>
+      <p class="body sheet__desc" id="sheetDesc"></p>
+      <div class="actions" id="sheetLinks"></div>
+      <div class="sheet__readme" id="sheetReadme"></div>
+    </div>
+  </div>
+</div>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="vendor/lenis.min.js"></script>
+<script src="vendor/marked.min.js"></script>
+<script src="vendor/purify.min.js"></script>
+<script src="js/particles.js?v=11"></script>
+<script src="js/main.js?v=11"></script>
 </body>
 </html>
